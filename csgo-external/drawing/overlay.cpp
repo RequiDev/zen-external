@@ -29,28 +29,30 @@ namespace drawing
 		margins_ = { 0, 0, window_rect_.width(), window_rect_.height() };
 
 		WNDCLASSEX wc = { 0 };
-
 		wc.cbSize = sizeof(WNDCLASSEX);
-		wc.style = CS_HREDRAW | CS_VREDRAW;
+		wc.style = 0;
 		wc.lpfnWndProc = wnd_proc_thunk;
-		wc.hInstance = GetModuleHandle(nullptr);
-		wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
-		wc.hbrBackground = RGB(0, 0, 0);
+		wc.hInstance = nullptr;
+		wc.hCursor = nullptr;
+		wc.hbrBackground = nullptr;
 		wc.lpszClassName = "csgo_external";
+
 		::RegisterClassEx(&wc);
 
-		hwnd_ = ::CreateWindowExA(WS_EX_LAYERED | WS_EX_TRANSPARENT, wc.lpszClassName, "csgo_external", WS_POPUP | WS_VISIBLE,
+		hwnd_ = ::CreateWindowEx(WS_EX_TOPMOST | WS_EX_TRANSPARENT | WS_EX_LAYERED | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE, wc.lpszClassName, "csgo_external", WS_POPUP | WS_VISIBLE,
 		                        window_rect_.left, window_rect_.top, window_rect_.width(), window_rect_.height(), nullptr,
-		                        nullptr, wc.hInstance, nullptr);
-
-		::SetLayeredWindowAttributes(hwnd_, RGB(0, 0, 0), 0, ULW_COLORKEY);
-		::SetLayeredWindowAttributes(hwnd_, 0, 255, LWA_ALPHA);
+		                        nullptr, nullptr, nullptr);
 
 		if (!hwnd_)
 			return nullptr;
 
 		if (!renderer_.create(hwnd_))
 			return nullptr;
+
+		::SetLayeredWindowAttributes(hwnd_, 0, 255, 0x2);
+		::UpdateWindow(hwnd_);
+
+		extend_frame_into_client_area();
 
 		return &renderer_;
 	}
@@ -75,11 +77,11 @@ namespace drawing
 				window_rect_ = rc;
 				margins_ = { 0, 0, window_rect_.width(), window_rect_.height() };
 				::MoveWindow(hwnd_, rc.left, rc.top, window_rect_.width(), window_rect_.height(), true);
-				::DwmExtendFrameIntoClientArea(hwnd_, &margins_);
+				extend_frame_into_client_area();
 			}
 
 			// keep our window between game and everything else
-			::SetWindowPos(target_hwnd_, hwnd_, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+			//::SetWindowPos(target_hwnd_, hwnd_, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
 			renderer_.begin_rendering();
 
@@ -93,22 +95,32 @@ namespace drawing
 		return EXIT_SUCCESS;
 	}
 
+	void overlay_t::extend_frame_into_client_area() const
+	{
+		MARGINS margins = { -1 };
+		DwmExtendFrameIntoClientArea(hwnd_, &margins);
+	}
+
 	LRESULT overlay_t::wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		switch (message)
 		{
-			case WM_CREATE:
-				::DwmExtendFrameIntoClientArea(hwnd, &margins_);
+			case WM_ERASEBKGND:
+				SendMessage(hwnd_, WM_PAINT, 0, 0);
 				break;
+			case WM_KEYDOWN:
+				return 0;
+			case WM_PAINT:
+				return 0;
 			case WM_SIZE:
 				if (!renderer_.reset_device())
 					throw std::runtime_error("Could not reset device.");
 				break;
 			default:
-				return ::DefWindowProc(hwnd, message, wParam, lParam);
+				break;
 		}
 
-		return 1;
+		return::DefWindowProc(hwnd, message, wParam, lParam);
 	}
 
 	LRESULT CALLBACK overlay_t::wnd_proc_thunk(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)

@@ -15,6 +15,8 @@ namespace drawing
 		renderer_t* create(HWND child);
 		int mainloop();
 	private:
+		void extend_frame_into_client_area() const;
+
 		LRESULT wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 		static LRESULT CALLBACK wnd_proc_thunk(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 		static overlay_t* this_;
