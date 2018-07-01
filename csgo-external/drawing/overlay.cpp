@@ -80,9 +80,6 @@ namespace drawing
 				extend_frame_into_client_area();
 			}
 
-			// keep our window between game and everything else
-			//::SetWindowPos(target_hwnd_, hwnd_, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-
 			renderer_.begin_rendering();
 
 			renderer_.draw_text(std::to_string(renderer_.get_frame_rate()) + " FPS", { 10, 10 });
@@ -105,17 +102,13 @@ namespace drawing
 	{
 		switch (message)
 		{
-			case WM_ERASEBKGND:
-				SendMessage(hwnd_, WM_PAINT, 0, 0);
-				break;
-			case WM_KEYDOWN:
-				return 0;
-			case WM_PAINT:
-				return 0;
 			case WM_SIZE:
 				if (!renderer_.reset_device())
 					throw std::runtime_error("Could not reset device.");
 				break;
+			case WM_DWMCOMPOSITIONCHANGED: // windows 7 support (thanks YatoDev)
+				extend_frame_into_client_area();
+				return 0;
 			default:
 				break;
 		}
