@@ -1,4 +1,5 @@
 #include "process.hpp"
+#include <processthreadsapi.h>
 
 namespace remote
 {

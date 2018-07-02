@@ -1,5 +1,5 @@
 #pragma once
-#include <windows.h>
+#include <windef.h>
 #include <string>
 #include <drawing/device/device.hpp>
 

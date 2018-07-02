@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cheat/cheat.hpp>
+#include <winbase.h>
 
 std::string error_codes[] =
 {

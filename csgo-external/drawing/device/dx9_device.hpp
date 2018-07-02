@@ -1,6 +1,6 @@
 #pragma once
 #include "device.hpp"
-#include <windows.h>
+#include <windef.h>
 #include <d3d9types.h>
 #include <string>
 

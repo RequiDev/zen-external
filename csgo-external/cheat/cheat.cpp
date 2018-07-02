@@ -1,6 +1,7 @@
 #include "cheat.hpp"
 #include <thread>
 #include <iostream>
+#include <winuser.h>
 
 namespace cheat
 {

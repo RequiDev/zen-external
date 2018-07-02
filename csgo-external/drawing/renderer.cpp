@@ -2,6 +2,7 @@
 #include <ctime>
 #include <base/rect.hpp>
 #include <drawing/device/dx9_device.hpp>
+#include <winuser.h>
 
 namespace drawing
 {

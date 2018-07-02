@@ -1,7 +1,8 @@
 #pragma once
 
-#include <windows.h>
+#include <windef.h>
 #include <memory>
+#include <handleapi.h>
 
 namespace base
 {
@@ -95,6 +96,5 @@ namespace base
 
 	using handle_t = auto_handle_t<HANDLE, decltype(&CloseHandle), &CloseHandle, nullptr>;
 	using file_handle_t = auto_handle_t<HANDLE, decltype(&CloseHandle), &CloseHandle, INVALID_HANDLE_VALUE>;
-	using file_map_handle_t = auto_handle_t<void*, decltype(&UnmapViewOfFile), &UnmapViewOfFile, nullptr>;
 	using snap_handle_t = file_handle_t;
 } // namespace base
