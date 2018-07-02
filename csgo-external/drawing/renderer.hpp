@@ -31,14 +31,15 @@ namespace drawing
 
 		bool create(HWND owner);
 		void draw_text(const std::string& text, const base::point_t& point) const;
-		void begin_rendering() const;
+		void begin_rendering();
 		void end_rendering();
 
 		int get_frame_rate() const;
 		bool reset_device();
 	private:
 
-		std::unique_ptr<device_t> device_tmp_;
+		std::unique_ptr<device_t> device_;
+		HWND hwnd_;
 		fps_data_t fps_data_;
 		int frame_rate_;
 	};

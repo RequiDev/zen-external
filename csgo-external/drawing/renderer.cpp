@@ -7,6 +7,7 @@
 namespace drawing
 {
 	renderer_t::renderer_t() noexcept:
+		hwnd_(nullptr),
 		fps_data_(),
 		frame_rate_(0)
 	{
@@ -14,29 +15,30 @@ namespace drawing
 
 	renderer_t::~renderer_t()
 	{
-		if (device_tmp_)
-			device_tmp_->release();
+		if (device_)
+			device_->release();
 	}
 
 	bool renderer_t::create(HWND owner)
 	{
+		hwnd_ = owner;
 		base::rect_t rc;
-		if (!::GetWindowRect(owner, &rc))
+		if (!::GetWindowRect(hwnd_, &rc))
 			return false;
 
-		device_tmp_.reset(new dx9_device_t(owner));
+		device_.reset(new dx9_device_t(hwnd_));
 
 		return true;
 	}
 
 	void renderer_t::draw_text(const std::string& text, const base::point_t& point) const
 	{
-		device_tmp_->draw_text(text, point);
+		device_->draw_text(text, point);
 	}
 
-	void renderer_t::begin_rendering() const
+	void renderer_t::begin_rendering()
 	{
-		device_tmp_->begin_scene();
+		device_->begin_scene();
 	}
 
 	void renderer_t::end_rendering()
@@ -49,7 +51,7 @@ namespace drawing
 			fps_data_.fps = fps_data_.frames;
 			fps_data_.frames = 0;
 		}
-		device_tmp_->end_scene();
+		device_->end_scene();
 	}
 
 	int renderer_t::get_frame_rate() const
@@ -60,10 +62,10 @@ namespace drawing
 	bool renderer_t::reset_device()
 	{
 		// In case we get WM_SIZE but the renderer isn't even created yet
-		if (!device_tmp_)
+		if (!device_)
 			return true;
 
-		if (!device_tmp_->reset())
+		if (!device_->reset())
 			return false;
 
 		return true;

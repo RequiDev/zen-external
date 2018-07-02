@@ -41,10 +41,7 @@ namespace drawing
 
 	void dx9_device_t::release()
 	{
-		if (sprite_)
-			sprite_->Release();
-		if (font_)
-			font_->Release();
+		destroy_device_objects();
 		if (device_)
 			device_->Release();
 		if (d3d_)
