@@ -1,6 +1,4 @@
 #include "renderer.hpp"
-#include <d3d9.h>
-#include <d3dx9.h>
 #include <ctime>
 #include <base/rect.hpp>
 #include <drawing/device/dx9_device.hpp>
