@@ -1,5 +1,4 @@
 #pragma once
-#include <windows.h>
 #include <base/rect.hpp>
 #include <drawing/renderer.hpp>
 

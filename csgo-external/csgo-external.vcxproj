@@ -154,6 +154,7 @@
     <ClCompile Include="base\rect.cpp" />
     <ClCompile Include="cheat\cheat.cpp" />
     <ClCompile Include="csgo\entity_list.cpp" />
+    <ClCompile Include="drawing\device\dx9_device.cpp" />
     <ClCompile Include="drawing\overlay.cpp" />
     <ClCompile Include="drawing\renderer.cpp" />
     <ClCompile Include="main.cpp" />
@@ -166,6 +167,9 @@
     <ClInclude Include="cheat\cheat.hpp" />
     <ClInclude Include="cheat\cheat_controller.hpp" />
     <ClInclude Include="csgo\entity_list.hpp" />
+    <ClInclude Include="drawing\device\device.hpp" />
+    <ClInclude Include="drawing\device\dx9_device.hpp" />
+    <ClInclude Include="wintypes.hpp" />
     <ClInclude Include="drawing\overlay.hpp" />
     <ClInclude Include="drawing\renderer.hpp" />
     <ClInclude Include="feature\esp.hpp" />

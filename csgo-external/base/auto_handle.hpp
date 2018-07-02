@@ -1,4 +1,5 @@
 #pragma once
+
 #include <windows.h>
 #include <memory>
 
@@ -94,7 +95,6 @@ namespace base
 
 	using handle_t = auto_handle_t<HANDLE, decltype(&CloseHandle), &CloseHandle, nullptr>;
 	using file_handle_t = auto_handle_t<HANDLE, decltype(&CloseHandle), &CloseHandle, INVALID_HANDLE_VALUE>;
-	using actx_handle_t = auto_handle_t<HANDLE, decltype(&ReleaseActCtx), &ReleaseActCtx, INVALID_HANDLE_VALUE>;
 	using file_map_handle_t = auto_handle_t<void*, decltype(&UnmapViewOfFile), &UnmapViewOfFile, nullptr>;
 	using snap_handle_t = file_handle_t;
 } // namespace base

@@ -1,18 +1,12 @@
 #pragma once
 #include <windows.h>
-#include <d3d9types.h>
 #include <string>
-
-struct IDirect3D9;
-struct IDirect3DDevice9;
+#include <drawing/device/device.hpp>
 
 namespace base
 {
 	class point_t;
 } // namespace base
-
-struct ID3DXFont;
-struct ID3DXSprite;
 
 namespace drawing
 {
@@ -43,15 +37,8 @@ namespace drawing
 		int get_frame_rate() const;
 		bool reset_device();
 	private:
-		bool create_device_objects();
-		void destroy_device_objects();
 
-		// TODO: DirectX 11 !!!
-		D3DPRESENT_PARAMETERS dpp_;
-		IDirect3D9* d3d_;
-		IDirect3DDevice9* device_;
-		ID3DXFont* font_;
-		ID3DXSprite* sprite_;
+		std::unique_ptr<device_t> device_tmp_;
 		fps_data_t fps_data_;
 		int frame_rate_;
 	};
