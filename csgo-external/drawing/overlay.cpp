@@ -1,7 +1,10 @@
 #include "overlay.hpp"
+#include <base/point.hpp>
 #include <chrono>
 #include <thread>
-#include <base/point.hpp>
+#include <string>
+#include <Dwmapi.h>
+#include <comdef.h>
 
 namespace drawing
 {
@@ -9,24 +12,22 @@ namespace drawing
 
 	overlay_t::overlay_t() noexcept:
 		hwnd_(nullptr),
-		target_hwnd_(nullptr),
-		margins_()
+		target_hwnd_(nullptr)
 	{
 		this_ = this;
 	}
 
 	overlay_t::~overlay_t()
 	{
-		::UnregisterClass("csgo_external", GetModuleHandle(nullptr));
+		::UnregisterClass("csgo_external", nullptr);
 	}
 
-	renderer_t* overlay_t::create(HWND child)
+	renderer_t* overlay_t::create(HWND target_hwnd)
 	{
-		if (!::GetWindowRect(child, &window_rect_))
+		if (!::GetWindowRect(target_hwnd, &window_rect_))
 			return nullptr;
 
-		target_hwnd_ = child;
-		margins_ = { 0, 0, window_rect_.width(), window_rect_.height() };
+		target_hwnd_ = target_hwnd;
 
 		WNDCLASSEX wc = { 0 };
 		wc.cbSize = sizeof(WNDCLASSEX);
@@ -49,7 +50,7 @@ namespace drawing
 		if (!renderer_.create(hwnd_))
 			return nullptr;
 
-		::SetLayeredWindowAttributes(hwnd_, 0, 255, 0x2);
+		::SetLayeredWindowAttributes(hwnd_, 0, 255, LWA_ALPHA);
 		::UpdateWindow(hwnd_);
 
 		extend_frame_into_client_area();
@@ -66,27 +67,16 @@ namespace drawing
 			{
 				::TranslateMessage(&msg);
 				::DispatchMessage(&msg);
+
+				if (msg.message == WM_QUIT)
+					break;
+
+				if (!ensure_window_size())
+					PostMessage(hwnd_, WM_QUIT, 0, 0);
+
+				// not sure about this one
+				std::this_thread::sleep_for(std::chrono::milliseconds(1));
 			}
-
-			RECT rc;
-			if (!::GetWindowRect(target_hwnd_, &rc))
-				break;
-
-			if (window_rect_ != rc)
-			{
-				window_rect_ = rc;
-				margins_ = { 0, 0, window_rect_.width(), window_rect_.height() };
-				::MoveWindow(hwnd_, rc.left, rc.top, window_rect_.width(), window_rect_.height(), true);
-				extend_frame_into_client_area();
-			}
-
-			renderer_.begin_rendering();
-
-			renderer_.draw_text(std::to_string(renderer_.get_frame_rate()) + " FPS", { 10, 10 });
-
-			renderer_.end_rendering();
-
-			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 
 		return EXIT_SUCCESS;
@@ -95,7 +85,30 @@ namespace drawing
 	void overlay_t::extend_frame_into_client_area() const
 	{
 		MARGINS margins = { -1 };
-		DwmExtendFrameIntoClientArea(hwnd_, &margins);
+		::DwmExtendFrameIntoClientArea(hwnd_, &margins);
+	}
+
+	bool overlay_t::ensure_window_size()
+	{
+		if (!is_target_alive())
+			return false;
+
+		RECT rc;
+		if (!::GetWindowRect(target_hwnd_, &rc))
+			return false;
+
+		if (window_rect_ != rc)
+		{
+			window_rect_ = rc;
+			::MoveWindow(hwnd_, rc.left, rc.top, window_rect_.width(), window_rect_.height(), true);
+			extend_frame_into_client_area();
+		}
+		return true;
+	}
+
+	bool overlay_t::is_target_alive() const
+	{
+		return ::IsWindow(target_hwnd_);
 	}
 
 	LRESULT overlay_t::wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -109,17 +122,22 @@ namespace drawing
 			case WM_DWMCOMPOSITIONCHANGED: // windows 7 support (thanks YatoDev)
 				extend_frame_into_client_area();
 				return 0;
+			case WM_PAINT:
+				renderer_.begin_rendering();
+				renderer_.draw_text(std::to_string(renderer_.get_frame_rate()) + " FPS", { 10, 10 });
+				renderer_.end_rendering();
+				return 0;
 			default:
 				break;
 		}
 
-		return::DefWindowProc(hwnd, message, wParam, lParam);
+		return ::DefWindowProc(hwnd, message, wParam, lParam);
 	}
 
 	LRESULT CALLBACK overlay_t::wnd_proc_thunk(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		if (!this_)
-			return 1;
+			return ::DefWindowProc(hwnd, message, wParam, lParam);
 		return this_->wnd_proc(hwnd, message, wParam, lParam);
 	}
 } // namespace drawing

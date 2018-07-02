@@ -153,6 +153,7 @@
     <ClCompile Include="base\point.cpp" />
     <ClCompile Include="base\rect.cpp" />
     <ClCompile Include="cheat\cheat.cpp" />
+    <ClCompile Include="csgo\entity_list.cpp" />
     <ClCompile Include="drawing\overlay.cpp" />
     <ClCompile Include="drawing\renderer.cpp" />
     <ClCompile Include="main.cpp" />
@@ -163,8 +164,11 @@
     <ClInclude Include="base\point.hpp" />
     <ClInclude Include="base\rect.hpp" />
     <ClInclude Include="cheat\cheat.hpp" />
+    <ClInclude Include="cheat\cheat_controller.hpp" />
+    <ClInclude Include="csgo\entity_list.hpp" />
     <ClInclude Include="drawing\overlay.hpp" />
     <ClInclude Include="drawing\renderer.hpp" />
+    <ClInclude Include="feature\esp.hpp" />
     <ClInclude Include="remote\process.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

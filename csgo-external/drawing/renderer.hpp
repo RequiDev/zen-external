@@ -1,7 +1,10 @@
 #pragma once
 #include <windows.h>
+#include <d3d9types.h>
 #include <string>
-#include <d3d9.h>
+
+struct IDirect3D9;
+struct IDirect3DDevice9;
 
 namespace base
 {
@@ -17,12 +20,18 @@ namespace drawing
 	{
 		struct fps_data_t
 		{
+			int frames;
 			int fps;
-			int last_fps;
-			float last_tick_count;
 			float tick_count;
 		};
 	public:
+		// TODO: Add multiple device types
+		enum device_type_t
+		{
+			d2d,
+			d3d
+		};
+
 		renderer_t() noexcept;
 		~renderer_t();
 
@@ -37,6 +46,7 @@ namespace drawing
 		bool create_device_objects();
 		void destroy_device_objects();
 
+		// TODO: DirectX 11 !!!
 		D3DPRESENT_PARAMETERS dpp_;
 		IDirect3D9* d3d_;
 		IDirect3DDevice9* device_;
