@@ -1,9 +1,12 @@
+#pragma warning(disable:4005)
+
 #include "d2d_device.hpp"
 #include <base/rect.hpp>
-#include <d2d1.h>
-#include <d2d1helper.h>
 #include <dwrite.h>
+#include <d2d1.h>
 #include <base/point.hpp>
+#include <locale>
+#include <codecvt>
 
 namespace drawing
 {
@@ -89,8 +92,9 @@ namespace drawing
 
 	void d2d_device_t::draw_text(const std::string& text, const base::point_t& pt)
 	{
-		const D2D_RECT_F font_rect = D2D1::RectF(pt.x, pt.y, pt.x + float(text.length()) * float(13 / 2), 13);
-		std::wstring wstr(text.begin(), text.end());
+		const D2D_RECT_F font_rect(D2D1::RectF(float(pt.x), float(pt.y), pt.x + float(text.length()) * (13.f * 0.5f), 13.f));
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> conv;
+		std::wstring wstr(conv.from_bytes(text));
 
 		render_target_->DrawText(wstr.data(), uint32_t(wstr.length()), font_, &font_rect, color_brush_);
 	}

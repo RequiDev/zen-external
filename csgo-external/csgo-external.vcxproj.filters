@@ -36,9 +36,6 @@
     <ClCompile Include="base\point.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="csgo\entity_list.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="drawing\device\dx9_device.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -68,12 +65,6 @@
     <ClInclude Include="base\point.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="csgo\entity_list.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="feature\esp.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="cheat\cheat_controller.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -81,9 +72,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="drawing\device\dx9_device.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="wintypes.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="drawing\device\d2d_device.hpp">
