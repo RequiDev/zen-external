@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="base\last_error.cpp" />
     <ClCompile Include="base\point.cpp" />
     <ClCompile Include="base\rect.cpp" />
     <ClCompile Include="cheat\cheat.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="drawing\device\dx9_device.hpp" />
     <ClInclude Include="drawing\overlay.hpp" />
     <ClInclude Include="drawing\renderer.hpp" />
+    <ClInclude Include="base\last_error.hpp" />
     <ClInclude Include="remote\process.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

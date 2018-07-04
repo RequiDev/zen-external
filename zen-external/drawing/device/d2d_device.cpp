@@ -7,6 +7,7 @@
 #include <base/point.hpp>
 #include <locale>
 #include <codecvt>
+#include <base/last_error.hpp>
 
 namespace drawing
 {
@@ -30,7 +31,9 @@ namespace drawing
 		if (!::GetWindowRect(owner, &rc))
 			return false;
 
-		if (FAILED(::D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory), nullptr, reinterpret_cast<void**>(&factory_))))
+		base::hresult_t hr;
+		hr = ::D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory), nullptr, reinterpret_cast<void**>(&factory_));
+		if (FAILED(hr))
 			return false;
 
 		{
@@ -39,23 +42,20 @@ namespace drawing
 			const D2D1_SIZE_U size(D2D1::SizeU(rc.width(), rc.height()));
 			const D2D1_HWND_RENDER_TARGET_PROPERTIES hwnd_render_target_properties(D2D1::HwndRenderTargetProperties(owner, size, D2D1_PRESENT_OPTIONS_IMMEDIATELY));
 
-			if (FAILED(factory_->CreateHwndRenderTarget(render_target_properties, hwnd_render_target_properties, &render_target_))) // wtf d2d?????
+			hr = factory_->CreateHwndRenderTarget(render_target_properties, hwnd_render_target_properties, &render_target_);
+			if (FAILED(hr))
 				return false;
 		}
 
 		if (FAILED(::DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&write_factory_))))
 			return false;
 
-		HRESULT hr = write_factory_->CreateTextFormat(L"Tahoma", nullptr, DWRITE_FONT_WEIGHT(13), DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 13, L"de-de", &font_);
+		hr = write_factory_->CreateTextFormat(L"Tahoma", nullptr, DWRITE_FONT_WEIGHT(13), DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 13, L"de-de", &font_);
 		if (FAILED(hr))
-		{
-			char buffer[MAX_PATH];
-			sprintf_s(buffer, MAX_PATH, "0x%X", hr);
-			MessageBox(owner, buffer, "", 0);
 			return false;
-		}
 
-		if (FAILED(render_target_->CreateSolidColorBrush(D2D1::ColorF(0xFFFFFFFF), &color_brush_)))
+		hr = render_target_->CreateSolidColorBrush(D2D1::ColorF(0xFFFFFFFF), &color_brush_);
+		if (FAILED(hr))
 			return false;
 
 		return true;

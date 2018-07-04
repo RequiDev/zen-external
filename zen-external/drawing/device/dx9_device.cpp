@@ -2,6 +2,7 @@
 #include <d3d9.h>
 #include <d3dx9.h>
 #include <base/rect.hpp>
+#include <base/last_error.hpp>
 
 namespace drawing
 {
@@ -38,7 +39,9 @@ namespace drawing
 		dpp_.AutoDepthStencilFormat = D3DFMT_D16;
 		dpp_.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 
-		if (FAILED(d3d_->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, dpp_.hDeviceWindow, D3DCREATE_HARDWARE_VERTEXPROCESSING, &dpp_, &device_)))
+		base::hresult_t hr;
+		hr = d3d_->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, dpp_.hDeviceWindow, D3DCREATE_HARDWARE_VERTEXPROCESSING, &dpp_, &device_);
+		if (FAILED(hr))
 			return false;
 
 		if (!create_device_objects())
@@ -81,7 +84,9 @@ namespace drawing
 		dpp_.BackBufferWidth = rc.width();
 		dpp_.BackBufferHeight = rc.height();
 
-		if (FAILED(device_->Reset(&dpp_)))
+		base::hresult_t hr;
+		hr = device_->Reset(&dpp_);
+		if (FAILED(hr))
 			return false;
 
 		if (!create_device_objects())
@@ -102,10 +107,13 @@ namespace drawing
 
 	bool dx9_device_t::create_device_objects()
 	{
-		if (FAILED(::D3DXCreateFont(device_, 13, 0, FW_HEAVY, 1, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Tahoma", &font_)))
+		base::hresult_t hr;
+		hr = ::D3DXCreateFont(device_, 13, 0, FW_HEAVY, 1, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Tahoma", &font_);
+		if (FAILED(hr))
 			return false;
 
-		if (FAILED(::D3DXCreateSprite(device_, &sprite_)))
+		hr = ::D3DXCreateSprite(device_, &sprite_);
+		if (FAILED(hr))
 			return false;
 
 		return true;
