@@ -1,9 +1,9 @@
 #include "renderer.hpp"
 #include <ctime>
 #include <base/rect.hpp>
+#include <drawing/device/d2d_device.hpp>
 #include <drawing/device/dx9_device.hpp>
 #include <winuser.h>
-#include <drawing/device/d2d_device.hpp>
 
 namespace drawing
 {
@@ -20,24 +20,23 @@ namespace drawing
 			device_->release();
 	}
 
-	bool renderer_t::create(HWND owner)
+	bool renderer_t::create(HWND owner, device_type_t device_type)
 	{
 		hwnd_ = owner;
 		base::rect_t rc;
 		if (!::GetWindowRect(hwnd_, &rc))
 			return false;
 
-		device_type_t type(device_type_t::d2d);
-		switch (type)
+		switch (device_type)
 		{
-		case d3d:
-			device_.reset(new dx9_device_t());
-			break;
-		case d2d:
-			device_.reset(new d2d_device_t());
-			break;
-		default:
-			return false;
+			case d3d:
+				device_.reset(new dx9_device_t());
+				break;
+			case d2d:
+				device_.reset(new d2d_device_t());
+				break;
+			default:
+				return false;
 		}
 
 		if (!device_->create(hwnd_))

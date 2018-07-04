@@ -4,13 +4,15 @@
 
 namespace drawing
 {
+	class overlay_controller_t;
+
 	class overlay_t
 	{
 	public:
-		overlay_t() noexcept;
+		explicit overlay_t(overlay_controller_t* ctrl = nullptr) noexcept;
 		~overlay_t();
 
-		renderer_t* create(HWND target_hwnd);
+		bool create(HWND target_hwnd);
 		int mainloop();
 	private:
 		void extend_frame_into_client_area() const;
@@ -20,6 +22,8 @@ namespace drawing
 		LRESULT wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 		static LRESULT CALLBACK wnd_proc_thunk(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 		static overlay_t* this_;
+
+		overlay_controller_t* ovrly_ctrl_;
 
 		renderer_t renderer_;
 		HWND hwnd_; // TODO: Make an abstract window class

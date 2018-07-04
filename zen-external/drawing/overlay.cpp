@@ -1,4 +1,5 @@
 #include "overlay.hpp"
+#include "overlay_controller.hpp"
 #include <base/point.hpp>
 #include <chrono>
 #include <thread>
@@ -10,7 +11,8 @@ namespace drawing
 {
 	overlay_t* overlay_t::this_ = nullptr;
 
-	overlay_t::overlay_t() noexcept:
+	overlay_t::overlay_t(overlay_controller_t* ctrl) noexcept:
+		ovrly_ctrl_(ctrl),
 		hwnd_(nullptr),
 		target_hwnd_(nullptr)
 	{
@@ -22,20 +24,17 @@ namespace drawing
 		::UnregisterClass("csgo_external", nullptr);
 	}
 
-	renderer_t* overlay_t::create(HWND target_hwnd)
+	bool overlay_t::create(HWND target_hwnd)
 	{
 		if (!::GetWindowRect(target_hwnd, &window_rect_))
-			return nullptr;
+			return false;
 
 		target_hwnd_ = target_hwnd;
 
-		WNDCLASSEX wc = { 0 };
+		WNDCLASSEX wc;
+		::ZeroMemory(&wc, sizeof wc);
 		wc.cbSize = sizeof(WNDCLASSEX);
-		wc.style = 0;
 		wc.lpfnWndProc = wnd_proc_thunk;
-		wc.hInstance = nullptr;
-		wc.hCursor = nullptr;
-		wc.hbrBackground = nullptr;
 		wc.lpszClassName = "csgo_external";
 
 		::RegisterClassEx(&wc);
@@ -45,17 +44,20 @@ namespace drawing
 		                        nullptr, nullptr, nullptr);
 
 		if (!hwnd_)
-			return nullptr;
+			return false;
 
-		if (!renderer_.create(hwnd_))
-			return nullptr;
+		if (!renderer_.create(hwnd_, renderer_t::device_type_t::d2d))
+			return false;
 
 		::SetLayeredWindowAttributes(hwnd_, 0, 255, LWA_ALPHA);
 		::UpdateWindow(hwnd_);
 
 		extend_frame_into_client_area();
 
-		return &renderer_;
+		if (ovrly_ctrl_)
+			ovrly_ctrl_->set_renderer(&renderer_);
+
+		return true;
 	}
 
 	int overlay_t::mainloop()

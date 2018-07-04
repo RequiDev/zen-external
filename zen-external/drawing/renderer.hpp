@@ -29,7 +29,7 @@ namespace drawing
 		renderer_t() noexcept;
 		~renderer_t();
 
-		bool create(HWND owner);
+		bool create(HWND owner, device_type_t device_type);
 		void draw_text(const std::string& text, const base::point_t& point) const;
 		void begin_rendering();
 		void end_rendering();

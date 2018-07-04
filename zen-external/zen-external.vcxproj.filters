@@ -83,5 +83,8 @@
     <ClInclude Include="base\last_error.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="drawing\overlay_controller.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -25,6 +25,11 @@ namespace drawing
 
 		virtual void draw_text(const std::string& text, const base::point_t& pt);
 	private:
+		bool create_device_objects();
+		void destroy_device_objects();
+
+		HWND owner_;
+
 		ID2D1Factory* factory_;
 		ID2D1HwndRenderTarget* render_target_;
 		IDWriteFactory* write_factory_;

@@ -6,6 +6,7 @@
 namespace cheat
 {
 	cheat_t::cheat_t(const std::string& game, const std::string& class_name):
+		overlay_(this),
 		renderer_(nullptr),
 		game_(game),
 		class_name_(class_name)
@@ -19,8 +20,7 @@ namespace cheat
 		if (!hwnd)
 			return 1000;
 
-		renderer_ = overlay_.create(hwnd);
-		if (!renderer_)
+		if (!overlay_.create(hwnd))
 			return 1001;
 
 		DWORD process_id;
@@ -30,5 +30,10 @@ namespace cheat
 			return 1002;
 
 		return overlay_.mainloop();
+	}
+
+	void cheat_t::set_renderer(drawing::renderer_t* renderer)
+	{
+		renderer_ = renderer;
 	}
 } // namespace cheat

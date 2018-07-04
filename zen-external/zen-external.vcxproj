@@ -172,6 +172,7 @@
     <ClInclude Include="drawing\device\device.hpp" />
     <ClInclude Include="drawing\device\dx9_device.hpp" />
     <ClInclude Include="drawing\overlay.hpp" />
+    <ClInclude Include="drawing\overlay_controller.hpp" />
     <ClInclude Include="drawing\renderer.hpp" />
     <ClInclude Include="base\last_error.hpp" />
     <ClInclude Include="remote\process.hpp" />

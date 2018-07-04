@@ -27,8 +27,9 @@ namespace drawing
 
 	bool d2d_device_t::create(HWND owner)
 	{
-		base::rect_t rc;
-		if (!::GetWindowRect(owner, &rc))
+		owner_ = owner;
+		base::rect_t rect;
+		if (!::GetWindowRect(owner_, &rect))
 			return false;
 
 		base::hresult_t hr;
@@ -36,39 +37,27 @@ namespace drawing
 		if (FAILED(hr))
 			return false;
 
-		{
-			const D2D1_PIXEL_FORMAT pixel_format(D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED));
-			const D2D1_RENDER_TARGET_PROPERTIES render_target_properties(D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_HARDWARE, pixel_format));
-			const D2D1_SIZE_U size(D2D1::SizeU(rc.width(), rc.height()));
-			const D2D1_HWND_RENDER_TARGET_PROPERTIES hwnd_render_target_properties(D2D1::HwndRenderTargetProperties(owner, size, D2D1_PRESENT_OPTIONS_IMMEDIATELY));
-
-			hr = factory_->CreateHwndRenderTarget(render_target_properties, hwnd_render_target_properties, &render_target_);
-			if (FAILED(hr))
-				return false;
-		}
-
 		if (FAILED(::DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&write_factory_))))
 			return false;
 
-		hr = write_factory_->CreateTextFormat(L"Tahoma", nullptr, DWRITE_FONT_WEIGHT(13), DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 13, L"de-de", &font_);
+		const D2D1_PIXEL_FORMAT pixel_format(D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED));
+		const D2D1_RENDER_TARGET_PROPERTIES render_target_properties(D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_HARDWARE, pixel_format));
+		const D2D1_SIZE_U size(D2D1::SizeU(rect.width(), rect.height()));
+		const D2D1_HWND_RENDER_TARGET_PROPERTIES hwnd_render_target_properties(D2D1::HwndRenderTargetProperties(owner_, size, D2D1_PRESENT_OPTIONS_IMMEDIATELY));
+
+		hr = factory_->CreateHwndRenderTarget(render_target_properties, hwnd_render_target_properties, &render_target_);
 		if (FAILED(hr))
 			return false;
 
-		hr = render_target_->CreateSolidColorBrush(D2D1::ColorF(0xFFFFFFFF), &color_brush_);
-		if (FAILED(hr))
-			return false;
+		create_device_objects();
 
 		return true;
 	}
 
 	void d2d_device_t::release()
 	{
-		if (color_brush_)
-			color_brush_->Release();
 		if (write_factory_)
 			write_factory_->Release();
-		if (render_target_)
-			render_target_->Release();
 		if (factory_)
 			factory_->Release();
 	}
@@ -87,6 +76,16 @@ namespace drawing
 
 	bool d2d_device_t::reset()
 	{
+		base::rect_t rect;
+		if (!::GetWindowRect(owner_, &rect))
+			return false;
+
+		base::hresult_t hr;
+		hr = render_target_->Resize(D2D1::SizeU(rect.width(), rect.height()));
+
+		if (FAILED(hr))
+			return false;
+
 		return true;
 	}
 
@@ -97,5 +96,28 @@ namespace drawing
 		std::wstring wstr(conv.from_bytes(text));
 
 		render_target_->DrawText(wstr.data(), uint32_t(wstr.length()), font_, &font_rect, color_brush_);
+	}
+
+	bool d2d_device_t::create_device_objects()
+	{
+		base::hresult_t hr;
+
+		hr = render_target_->CreateSolidColorBrush(D2D1::ColorF(0xFFFFFFFF), &color_brush_);
+		if (FAILED(hr))
+			return false;
+
+		hr = write_factory_->CreateTextFormat(L"Tahoma", nullptr, DWRITE_FONT_WEIGHT(13), DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 13, L"de-de", &font_);
+		if (FAILED(hr))
+			return false;
+
+		return true;
+	}
+
+	void d2d_device_t::destroy_device_objects()
+	{
+		if (color_brush_)
+			color_brush_->Release();
+		if (font_)
+			font_->Release();
 	}
 } // namespace drawing
