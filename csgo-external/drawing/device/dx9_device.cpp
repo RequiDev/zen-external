@@ -5,15 +5,25 @@
 
 namespace drawing
 {
-	dx9_device_t::dx9_device_t(HWND owner):
+	dx9_device_t::dx9_device_t():
 		dpp_(),
 		d3d_(nullptr),
 		device_(nullptr),
 		font_(nullptr),
 		sprite_(nullptr)
 	{
+	}
+
+	dx9_device_t::~dx9_device_t()
+	{
+		dx9_device_t::release();
+	}
+
+	bool dx9_device_t::create(HWND owner)
+	{
 		base::rect_t rc;
-		::GetWindowRect(owner, &rc);
+		if (!::GetWindowRect(owner, &rc))
+			return false;
 
 		d3d_ = ::Direct3DCreate9(D3D_SDK_VERSION);
 		::ZeroMemory(&dpp_, sizeof dpp_);
@@ -29,14 +39,12 @@ namespace drawing
 		dpp_.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 
 		if (FAILED(d3d_->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, dpp_.hDeviceWindow, D3DCREATE_HARDWARE_VERTEXPROCESSING, &dpp_, &device_)))
-			throw std::runtime_error("Could not create device.");
+			return false;
 
-		create_device_objects();
-	}
+		if (!create_device_objects())
+			return false;
 
-	dx9_device_t::~dx9_device_t()
-	{
-		dx9_device_t::release();
+		return true;
 	}
 
 	void dx9_device_t::release()

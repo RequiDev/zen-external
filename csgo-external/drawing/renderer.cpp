@@ -3,6 +3,7 @@
 #include <base/rect.hpp>
 #include <drawing/device/dx9_device.hpp>
 #include <winuser.h>
+#include <drawing/device/d2d_device.hpp>
 
 namespace drawing
 {
@@ -26,7 +27,21 @@ namespace drawing
 		if (!::GetWindowRect(hwnd_, &rc))
 			return false;
 
-		device_.reset(new dx9_device_t(hwnd_));
+		device_type_t type(device_type_t::d2d);
+		switch (type)
+		{
+		case d3d:
+			device_.reset(new dx9_device_t());
+			break;
+		case d2d:
+			device_.reset(new d2d_device_t());
+			break;
+		default:
+			return false;
+		}
+
+		if (!device_->create(hwnd_))
+			return false;
 
 		return true;
 	}

@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <windef.h>
 
 namespace base
 {
@@ -12,6 +13,9 @@ namespace drawing
 	{
 	public:
 		virtual ~device_t() {}
+
+		virtual bool create(HWND owner) = 0;
+
 		virtual void release() = 0;
 		virtual void begin_scene() = 0;
 		virtual void end_scene() = 0;

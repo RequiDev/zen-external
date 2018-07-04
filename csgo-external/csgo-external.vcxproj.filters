@@ -42,6 +42,9 @@
     <ClCompile Include="drawing\device\dx9_device.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="drawing\device\d2d_device.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="remote\process.hpp">
@@ -81,6 +84,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="wintypes.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="drawing\device\d2d_device.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

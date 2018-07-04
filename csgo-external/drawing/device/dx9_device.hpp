@@ -14,8 +14,10 @@ namespace drawing
 	class dx9_device_t : public device_t
 	{
 	public:
-		explicit dx9_device_t(HWND owner);
+		explicit dx9_device_t();
 		virtual ~dx9_device_t();
+
+		virtual bool create(HWND owner);
 
 		virtual void release();
 		virtual void begin_scene();
