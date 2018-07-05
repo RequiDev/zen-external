@@ -46,7 +46,7 @@ namespace drawing
 		if (!hwnd_)
 			return false;
 
-		if (!renderer_.create(hwnd_, renderer_t::device_type_t::d2d))
+		if (!renderer_.create(hwnd_, renderer_t::device_type_t::d3d))
 			return false;
 
 		::SetLayeredWindowAttributes(hwnd_, 0, 255, LWA_ALPHA);
@@ -62,7 +62,8 @@ namespace drawing
 
 	int overlay_t::mainloop()
 	{
-		MSG msg = { nullptr };
+		MSG msg;
+		::ZeroMemory(&msg, sizeof msg);
 		while (msg.message != WM_QUIT)
 		{
 			while (::PeekMessage(&msg, hwnd_, 0, 0, PM_REMOVE))
@@ -86,7 +87,8 @@ namespace drawing
 
 	void overlay_t::extend_frame_into_client_area() const
 	{
-		MARGINS margins = { -1 };
+		MARGINS margins;
+		::memset(&margins, -1, sizeof margins);
 		::DwmExtendFrameIntoClientArea(hwnd_, &margins);
 	}
 

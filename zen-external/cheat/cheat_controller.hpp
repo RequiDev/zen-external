@@ -7,4 +7,4 @@ namespace cheat
 	{
 	public:
 	};
-}
+} // namespace cheat

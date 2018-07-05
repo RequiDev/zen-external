@@ -1,5 +1,5 @@
 #include "last_error.hpp" 
-#include <windows.h>
+#include "auto_local.hpp"
 
 namespace base
 {
@@ -21,15 +21,11 @@ namespace base
 
 	std::string get_error_message(int error)
 	{
-		char* message_buffer = nullptr;
+		auto_local_t<char*> message_buffer;
 		::FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
 			nullptr, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), reinterpret_cast<char*>(&message_buffer), 0, nullptr);
 
-		std::string message(message_buffer);
-
-		::LocalFree(message_buffer);
-
-		return message;
+		return message_buffer.get();
 	}
 
 	int get_last_error()

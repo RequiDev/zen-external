@@ -10,7 +10,8 @@ struct IDWriteTextFormat;
 
 namespace drawing
 {
-	class d2d_device_t : public device_t
+	class d2d_device_t:
+		public device_t
 	{
 	public:
 		explicit d2d_device_t();

@@ -164,6 +164,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base\auto_handle.hpp" />
+    <ClInclude Include="base\auto_local.hpp" />
     <ClInclude Include="base\point.hpp" />
     <ClInclude Include="base\rect.hpp" />
     <ClInclude Include="cheat\cheat.hpp" />

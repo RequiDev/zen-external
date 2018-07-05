@@ -11,7 +11,8 @@ struct ID3DXSprite;
 
 namespace drawing
 {
-	class dx9_device_t : public device_t
+	class dx9_device_t:
+		public device_t
 	{
 	public:
 		explicit dx9_device_t();

@@ -86,5 +86,8 @@
     <ClInclude Include="drawing\overlay_controller.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="base\auto_local.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

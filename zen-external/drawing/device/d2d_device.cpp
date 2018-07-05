@@ -12,6 +12,7 @@
 namespace drawing
 {
 	d2d_device_t::d2d_device_t():
+		owner_(nullptr),
 		factory_(nullptr),
 		render_target_(nullptr),
 		write_factory_(nullptr),
@@ -115,6 +116,7 @@ namespace drawing
 
 	void d2d_device_t::destroy_device_objects()
 	{
+		// FIXME: Crashing? nullptr on IUnknown
 		if (color_brush_)
 			color_brush_->Release();
 		if (font_)
