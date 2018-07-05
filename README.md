@@ -1,2 +1,2 @@
-# csgo-external
-External csgo cheat base.
+# zen-external
+External cheat base.
