@@ -27,7 +27,7 @@ namespace drawing
 			return false;
 
 		d3d_ = ::Direct3DCreate9(D3D_SDK_VERSION);
-		::ZeroMemory(&dpp_, sizeof dpp_);
+		dpp_ = { 0 };
 
 		dpp_.Windowed = 1;
 		dpp_.SwapEffect = D3DSWAPEFFECT_DISCARD;

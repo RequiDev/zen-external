@@ -31,9 +31,8 @@ namespace drawing
 
 		target_hwnd_ = target_hwnd;
 
-		WNDCLASSEX wc;
-		::ZeroMemory(&wc, sizeof wc);
-		wc.cbSize = sizeof(WNDCLASSEX);
+		WNDCLASSEX wc = { 0 };
+		wc.cbSize = sizeof WNDCLASSEX;
 		wc.lpfnWndProc = wnd_proc_thunk;
 		wc.lpszClassName = "csgo_external";
 
@@ -62,8 +61,7 @@ namespace drawing
 
 	int overlay_t::mainloop()
 	{
-		MSG msg;
-		::ZeroMemory(&msg, sizeof msg);
+		MSG msg = { nullptr };
 		while (msg.message != WM_QUIT)
 		{
 			while (::PeekMessage(&msg, hwnd_, 0, 0, PM_REMOVE))
@@ -87,8 +85,7 @@ namespace drawing
 
 	void overlay_t::extend_frame_into_client_area() const
 	{
-		MARGINS margins;
-		::memset(&margins, -1, sizeof margins);
+		MARGINS margins = { -1 };
 		::DwmExtendFrameIntoClientArea(hwnd_, &margins);
 	}
 
