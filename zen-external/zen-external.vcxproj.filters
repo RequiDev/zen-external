@@ -48,7 +48,7 @@
     <ClCompile Include="gui\window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="remote\pbe.cpp">
+    <ClCompile Include="remote\peb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -98,10 +98,10 @@
     <ClInclude Include="remote\process_controller.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="remote\pbe.hpp">
+    <ClInclude Include="native\peb_native.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="native\peb_native.hpp">
+    <ClInclude Include="remote\peb.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

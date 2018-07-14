@@ -165,7 +165,7 @@
     <ClCompile Include="drawing\renderer.cpp" />
     <ClCompile Include="gui\window.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="remote\pbe.cpp" />
+    <ClCompile Include="remote\peb.cpp" />
     <ClCompile Include="remote\process.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -183,7 +183,7 @@
     <ClInclude Include="base\last_error.hpp" />
     <ClInclude Include="gui\window.hpp" />
     <ClInclude Include="native\peb_native.hpp" />
-    <ClInclude Include="remote\pbe.hpp" />
+    <ClInclude Include="remote\peb.hpp" />
     <ClInclude Include="remote\process.hpp" />
     <ClInclude Include="remote\process_controller.hpp" />
   </ItemGroup>

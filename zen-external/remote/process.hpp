@@ -2,7 +2,7 @@
 #include <base/auto_handle.hpp>
 #include <winternl.h>
 #include <libloaderapi.h>
-#include <remote/pbe.hpp>
+#include <remote/peb.hpp>
 
 namespace remote
 {
