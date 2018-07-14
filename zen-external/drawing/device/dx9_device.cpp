@@ -1,8 +1,8 @@
 #include "dx9_device.hpp"
-#include <d3d9.h>
-#include <d3dx9.h>
 #include <base/rect.hpp>
 #include <base/last_error.hpp>
+#include <d3d9.h>
+#include <d3dx9.h>
 
 namespace drawing
 {
@@ -22,8 +22,8 @@ namespace drawing
 
 	bool dx9_device_t::create(HWND owner)
 	{
-		base::rect_t rc;
-		if (!::GetWindowRect(owner, &rc))
+		base::rect_t rect;
+		if (!::GetWindowRect(owner, &rect))
 			return false;
 
 		d3d_ = ::Direct3DCreate9(D3D_SDK_VERSION);
@@ -33,8 +33,8 @@ namespace drawing
 		dpp_.SwapEffect = D3DSWAPEFFECT_DISCARD;
 		dpp_.hDeviceWindow = owner;
 		dpp_.BackBufferFormat = D3DFMT_A8R8G8B8;
-		dpp_.BackBufferWidth = rc.width();
-		dpp_.BackBufferHeight = rc.height();
+		dpp_.BackBufferWidth = rect.width();
+		dpp_.BackBufferHeight = rect.height();
 		dpp_.EnableAutoDepthStencil = 1;
 		dpp_.AutoDepthStencilFormat = D3DFMT_D16;
 		dpp_.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
@@ -75,14 +75,14 @@ namespace drawing
 
 	bool dx9_device_t::reset()
 	{
-		base::rect_t rc;
-		if (!::GetWindowRect(dpp_.hDeviceWindow, &rc))
+		base::rect_t rect;
+		if (!::GetWindowRect(dpp_.hDeviceWindow, &rect))
 			return false;
 
 		destroy_device_objects();
 
-		dpp_.BackBufferWidth = rc.width();
-		dpp_.BackBufferHeight = rc.height();
+		dpp_.BackBufferWidth = rect.width();
+		dpp_.BackBufferHeight = rect.height();
 
 		base::hresult_t hr;
 		hr = device_->Reset(&dpp_);
@@ -97,12 +97,12 @@ namespace drawing
 
 	void dx9_device_t::draw_text(const std::string& text, const base::point_t& pt)
 	{
-		base::rect_t rc(pt);
+		base::rect_t rect(pt);
 		// TODO: Add different type of flags
 		int format(DT_NOCLIP);
 		//format |= DT_CENTER;
 
-		font_->DrawText(sprite_, text.data(), -1, &rc, format, 0xFFFFFFFF);
+		font_->DrawText(sprite_, text.data(), -1, &rect, format, 0xFFFFFFFF);
 	}
 
 	bool dx9_device_t::create_device_objects()

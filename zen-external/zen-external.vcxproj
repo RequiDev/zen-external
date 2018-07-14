@@ -94,6 +94,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir);$(DXSDK_DIR)Include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;_X86_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\$(PlatformTarget)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -108,6 +109,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir);$(DXSDK_DIR)Include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;_AMD64_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\$(PlatformTarget)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -124,6 +126,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir);$(DXSDK_DIR)Include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;_X86_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -142,6 +145,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir);$(DXSDK_DIR)Include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;_AMD64_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -159,7 +163,9 @@
     <ClCompile Include="drawing\device\dx9_device.cpp" />
     <ClCompile Include="drawing\overlay.cpp" />
     <ClCompile Include="drawing\renderer.cpp" />
+    <ClCompile Include="gui\window.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="remote\pbe.cpp" />
     <ClCompile Include="remote\process.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -168,7 +174,6 @@
     <ClInclude Include="base\point.hpp" />
     <ClInclude Include="base\rect.hpp" />
     <ClInclude Include="cheat\cheat.hpp" />
-    <ClInclude Include="cheat\cheat_controller.hpp" />
     <ClInclude Include="drawing\device\d2d_device.hpp" />
     <ClInclude Include="drawing\device\device.hpp" />
     <ClInclude Include="drawing\device\dx9_device.hpp" />
@@ -176,7 +181,11 @@
     <ClInclude Include="drawing\overlay_controller.hpp" />
     <ClInclude Include="drawing\renderer.hpp" />
     <ClInclude Include="base\last_error.hpp" />
+    <ClInclude Include="gui\window.hpp" />
+    <ClInclude Include="native\peb_native.hpp" />
+    <ClInclude Include="remote\pbe.hpp" />
     <ClInclude Include="remote\process.hpp" />
+    <ClInclude Include="remote\process_controller.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

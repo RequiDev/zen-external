@@ -45,6 +45,12 @@
     <ClCompile Include="base\last_error.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="gui\window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="remote\pbe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="remote\process.hpp">
@@ -68,9 +74,6 @@
     <ClInclude Include="base\point.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cheat\cheat_controller.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="drawing\device\device.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -87,6 +90,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="base\auto_local.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\window.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="remote\process_controller.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="remote\pbe.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="native\peb_native.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

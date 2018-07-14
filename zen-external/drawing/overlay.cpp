@@ -21,6 +21,7 @@ namespace drawing
 
 	overlay_t::~overlay_t()
 	{
+		::DestroyWindow(hwnd_);
 		::UnregisterClass("csgo_external", nullptr);
 	}
 
@@ -35,7 +36,6 @@ namespace drawing
 		wc.cbSize = sizeof WNDCLASSEX;
 		wc.lpfnWndProc = wnd_proc_thunk;
 		wc.lpszClassName = "csgo_external";
-
 		::RegisterClassEx(&wc);
 
 		hwnd_ = ::CreateWindowEx(WS_EX_TOPMOST | WS_EX_TRANSPARENT | WS_EX_LAYERED | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE, wc.lpszClassName, "csgo_external", WS_POPUP | WS_VISIBLE,

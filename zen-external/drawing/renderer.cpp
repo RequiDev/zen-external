@@ -23,8 +23,8 @@ namespace drawing
 	bool renderer_t::create(HWND owner, device_type_t device_type)
 	{
 		hwnd_ = owner;
-		base::rect_t rc;
-		if (!::GetWindowRect(hwnd_, &rc))
+		base::rect_t rect;
+		if (!::GetWindowRect(hwnd_, &rect))
 			return false;
 
 		switch (device_type)
