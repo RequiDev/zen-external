@@ -3,10 +3,11 @@
 #include <winternl.h>
 #include <libloaderapi.h>
 #include <remote/peb.hpp>
+#include <base/last_error.hpp>
 
 namespace remote
 {
-	/**
+/**
  * \brief A wrapper class for process and memory operations
  */
 class process_t
@@ -86,7 +87,8 @@ public:
 		if (!nt_query_information_process)
 			return false;
 
-		NTSTATUS status = nt_query_information_process(handle_, info_class, &info, sizeof T, nullptr);
+		base::ntstatus_t status;
+		status = nt_query_information_process(handle_, info_class, &info, sizeof T, nullptr);
 
 		return NT_SUCCESS(status);
 	}
