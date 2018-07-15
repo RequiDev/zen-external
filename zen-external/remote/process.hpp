@@ -74,10 +74,10 @@ public:
 	 * \tparam T Type of info to store the data in.
 	 * \param info Reference to object where the info gets stored.
 	 * \param info_class Which type of info should be pulled from the process.
-	 * \return Wether the query succeeded or not. TODO: Implement proper LastNtStatus for error handling
+	 * \return Wether the query succeeded or not.
 	 */
 	template<class T>
-	bool query_information(T& info, PROCESSINFOCLASS info_class)
+	bool query_information(T& info, PROCESSINFOCLASS info_class) const
 	{
 		using nqip_t = NTSTATUS(NTAPI*)(HANDLE, PROCESSINFOCLASS, PVOID, SIZE_T, PULONG);
 		nqip_t nt_query_information_process = reinterpret_cast<nqip_t>(
@@ -92,14 +92,38 @@ public:
 	}
 
 	/**
-	 * \brief Query basic information of the process.
-	 * \param pbi Reference to the PROCESS_BASIC_INFORMATION object.
+	 * \brief Query object of the process handle.
+	 * \tparam T Type of info to store the data in.
+	 * \param info Reference to object where the info gets stored.
+	 * \param info_class Which type of info should be pulled from the process handle.
 	 * \return Wether the query succeeded or not.
 	 */
-	bool query_basic_information(PROCESS_BASIC_INFORMATION& pbi);
+	template<class T>
+	bool query_object(T& info, OBJECT_INFORMATION_CLASS info_class) const
+	{
+		using ntqo_t = NTSTATUS(NTAPI*)(HANDLE, OBJECT_INFORMATION_CLASS, PVOID, ULONG, PULONG);
+		ntqo_t nt_query_object = reinterpret_cast<ntqo_t>(
+			::GetProcAddress(::GetModuleHandle("ntdll.dll"), "NtQueryObject"));
+		if (!nt_query_object)
+			return false;
 
-	bool query_handle_information(PROCESS_HANDLE_INFORMATION& phi);
+		base::ntstatus_t status;
+		status = nt_query_object(handle_, info_class, &info, sizeof info, nullptr);
 
+		return NT_SUCCESS(status);
+	}
+
+	/**
+	 * \brief Get granted access of the process handle.
+	 * \return Granted access.
+	 */
+	uint32_t get_granted_access() const;
+
+	/**
+	 * \brief Gets module handle of the remote process.
+	 * \param str Name of the module to be found.
+	 * \return Pointer to module_t containing data of the module.
+	 */
 	module_t* get_module(const char* str);
 
 private:

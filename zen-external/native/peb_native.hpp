@@ -105,6 +105,31 @@ typedef struct _PROCESS_HANDLE_INFORMATION
 	PROCESS_HANDLE Handles[1];
 } PROCESS_HANDLE_INFORMATION, *PPROCESS_HANDLE_INFORMATION;
 
+typedef enum _OBJECT_INFORMATION_CLASS
+{
+	ObjectBasicInformation,
+	ObjectNameInformation,
+	ObjectTypeInformation,
+	ObjectAllInformation,
+	ObjectDataInformation
+
+} OBJECT_INFORMATION_CLASS, *POBJECT_INFORMATION_CLASS;
+
+typedef struct _OBJECT_BASIC_INFORMATION
+{
+	ULONG                   Attributes;
+	ACCESS_MASK             DesiredAccess;
+	ULONG                   HandleCount;
+	ULONG                   ReferenceCount;
+	ULONG                   PagedPoolUsage;
+	ULONG                   NonPagedPoolUsage;
+	ULONG                   Reserved[3];
+	ULONG                   NameInformationLength;
+	ULONG                   TypeInformationLength;
+	ULONG                   SecurityDescriptorLength;
+	LARGE_INTEGER           CreationTime;
+} OBJECT_BASIC_INFORMATION, *POBJECT_BASIC_INFORMATION;
+
 enum PROCESSINFOCLASS
 {
 	ProcessBasicInformation = 0, // 0, q: PROCESS_BASIC_INFORMATION, PROCESS_EXTENDED_BASIC_INFORMATION

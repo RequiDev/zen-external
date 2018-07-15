@@ -20,8 +20,10 @@ namespace remote
 		handle_.reset(::OpenProcess(desired_access, 0, process_id));
 		if (!handle_)
 			return false;
+
 		if (!peb_.reset())
 			return false;
+		
 		return true;
 	}
 
@@ -37,14 +39,13 @@ namespace remote
 		return !!::WriteProcessMemory(handle_, LPVOID(address), buffer, size, &size_written) && size_written > 0;
 	}
 
-	bool process_t::query_basic_information(PROCESS_BASIC_INFORMATION& pbi)
+	uint32_t process_t::get_granted_access() const
 	{
-		return query_information(pbi, ProcessBasicInformation);
-	}
+		OBJECT_BASIC_INFORMATION info;
+		if (!query_object(info, ObjectBasicInformation))
+			return 0;
 
-	bool process_t::query_handle_information(PROCESS_HANDLE_INFORMATION& phi)
-	{
-		return query_information(phi, ProcessHandleCount);
+		return info.DesiredAccess;
 	}
 
 	module_t* process_t::get_module(const char* str)

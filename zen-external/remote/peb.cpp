@@ -29,7 +29,7 @@ namespace remote
 	{
 		if (!pbi_.PebBaseAddress)
 		{
-			if (!process_->query_basic_information(pbi_))
+			if (!process_->query_information(pbi_, ProcessBasicInformation))
 				return false;
 		}
 
