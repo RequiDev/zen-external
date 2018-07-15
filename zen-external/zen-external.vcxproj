@@ -169,6 +169,7 @@
     <ClCompile Include="remote\process.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="base\auto_alloc.hpp" />
     <ClInclude Include="base\auto_handle.hpp" />
     <ClInclude Include="base\auto_local.hpp" />
     <ClInclude Include="base\point.hpp" />

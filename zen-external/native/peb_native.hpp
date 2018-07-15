@@ -3,7 +3,6 @@
 
 namespace native
 {
-
 	struct list_entry_t
 	{
 		list_entry_t* ForwardLink;

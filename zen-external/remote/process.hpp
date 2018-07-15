@@ -100,7 +100,7 @@ public:
 	 */
 	bool query_basic_information(PROCESS_BASIC_INFORMATION& pbi);
 
-	PEB* peb();
+	module_t* get_module(const char* str);
 
 private:
 	base::handle_t handle_;

@@ -104,5 +104,8 @@
     <ClInclude Include="remote\peb.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="base\auto_alloc.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

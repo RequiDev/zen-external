@@ -17,8 +17,9 @@ namespace remote
 
 	bool process_t::attach(uint32_t process_id, uint32_t desired_access)
 	{
-		peb_.reset();
 		handle_.reset(::OpenProcess(desired_access, 0, process_id));
+		if (!peb_.reset())
+			return false;
 		return handle_;
 	}
 
@@ -39,10 +40,8 @@ namespace remote
 		return query_information(pbi, ProcessBasicInformation);
 	}
 
-	PEB* process_t::peb()
+	module_t* process_t::get_module(const char* str)
 	{
-		if (!peb_.read())
-			return nullptr;
-		return peb_;
+		return peb_.get_module(str);
 	}
 } // namespace remote

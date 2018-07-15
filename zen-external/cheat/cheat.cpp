@@ -20,18 +20,15 @@ namespace cheat
 		if (!hwnd)
 			return 1000;
 
-		if (!overlay_.create(hwnd))
-			return 1001;
-
 		DWORD process_id;
 		::GetWindowThreadProcessId(hwnd, &process_id);
 
 		if (!process_.attach(process_id))
-			return 1002;
+			return 1001;
 
-		auto peb = process_.peb();
-		if (!peb)
-			return 1003;
+		// only create overlay, if we for sure initialized correctly.
+		if (!overlay_.create(hwnd))
+			return 1002;
 
 		return overlay_.mainloop();
 	}

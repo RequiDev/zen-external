@@ -5,9 +5,8 @@
 std::string error_codes[] =
 {
 	"Could not find game window.",
-	"Could not create overlay.",
 	"Could not attach to game process.",
-	"Could not read process environment block."
+	"Could not create overlay."
 };
 
 int main(int argc, char* argv[])
