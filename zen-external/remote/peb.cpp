@@ -1,6 +1,7 @@
 #include "peb.hpp"
 #include <remote/process.hpp>
 #include <base/auto_alloc.hpp>
+#include <winnls.h>
 
 namespace remote
 {
@@ -18,7 +19,9 @@ namespace remote
 	peb_t::peb_t(process_t* process):
 		process_(process),
 		pbi_(),
-		peb_()
+		peb_(),
+		ldr_(),
+		process_parameters_()
 	{
 	}
 
@@ -33,21 +36,20 @@ namespace remote
 		if (!process_->read(uintptr_t(pbi_.PebBaseAddress), peb_))
 			return false;
 
-		PEB_LDR_DATA ldr;
-		if (!process_->read(uintptr_t(peb_.Ldr), ldr))
+		if (!process_->read(uintptr_t(peb_.Ldr), ldr_))
 			return false;
-		memcpy(peb_.Ldr, &ldr, sizeof ldr);
+		peb_.Ldr = &ldr_;
 
-		RTL_USER_PROCESS_PARAMETERS process_parameters;
-		if (!process_->read(uintptr_t(peb_.ProcessParameters), process_parameters))
+		
+		if (!process_->read(uintptr_t(peb_.ProcessParameters), process_parameters_))
 			return false;
-		memcpy(&peb_.ProcessParameters, &process_parameters, sizeof process_parameters);
+		peb_.ProcessParameters = &process_parameters_;
 
-		command_line_ = read_unicode_string(process_parameters.CommandLine);
+		command_line_ = from_unicode_string(process_parameters_.CommandLine);
 
-		uintptr_t first_link = uintptr_t(ldr.InLoadOrderModuleList.Flink);
+		uintptr_t first_link = uintptr_t(ldr_.InLoadOrderModuleList.Flink);
 		uintptr_t forward_link = first_link;
-		do 
+		do
 		{
 			LDR_DATA_TABLE_ENTRY entry;
 			process_->read(forward_link, entry);
@@ -57,8 +59,9 @@ namespace remote
 				continue;
 			
 			module_t mod;
-			mod.name = read_unicode_string(entry.BaseDllName);
+			mod.name = from_unicode_string(entry.BaseDllName);
 			mod.base = uintptr_t(entry.BaseAddress);
+
 			// read nt shit
 			IMAGE_DOS_HEADER dos_hdr;
 			if (!process_->read(mod.base, dos_hdr) || dos_hdr.e_magic != IMAGE_DOS_SIGNATURE)
@@ -111,13 +114,17 @@ namespace remote
 		return read();
 	}
 
-	std::string peb_t::read_unicode_string(const UNICODE_STRING& value) const
+	std::string peb_t::from_unicode_string(const UNICODE_STRING& value) const
 	{
 		std::unique_ptr<wchar_t[]> buffer(std::make_unique<wchar_t[]>(value.Length));
 		if (!process_->read_memory(uintptr_t(value.Buffer), buffer.get(), value.Length))
 			return "";
 
-		std::wstring tmp(buffer.get());
-		return std::string(tmp.begin(), tmp.end());
+		int size = WideCharToMultiByte(CP_UTF8, 0, buffer.get(), value.Length, nullptr, 0, nullptr, nullptr);
+		std::string ret;
+		ret.reserve(size);
+		WideCharToMultiByte(CP_UTF8, 0, buffer.get(), value.Length, ret.data(), size, nullptr, nullptr);
+
+		return ret;
 	}
 } // namespace remote

@@ -79,7 +79,7 @@ public:
 	template<class T>
 	bool query_information(T& info, PROCESSINFOCLASS info_class)
 	{
-		using nqip_t = NTSTATUS(__stdcall*)(HANDLE, PROCESSINFOCLASS, PVOID, SIZE_T, PULONG);
+		using nqip_t = NTSTATUS(NTAPI*)(HANDLE, PROCESSINFOCLASS, PVOID, SIZE_T, PULONG);
 		nqip_t nt_query_information_process = reinterpret_cast<nqip_t>(
 			::GetProcAddress(::GetModuleHandle("ntdll.dll"), "NtQueryInformationProcess"));
 		if (!nt_query_information_process)

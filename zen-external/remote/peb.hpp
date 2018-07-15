@@ -27,11 +27,13 @@ namespace remote
 		bool reset();
 	private:
 		bool read();
-		std::string read_unicode_string(const UNICODE_STRING& value) const;
+		std::string from_unicode_string(const UNICODE_STRING& value) const;
 
 		process_t* process_;
 		PROCESS_BASIC_INFORMATION pbi_;
 		PEB	peb_;
+		PEB_LDR_DATA ldr_;
+		RTL_USER_PROCESS_PARAMETERS process_parameters_;
 
 		std::string command_line_;
 		std::vector<module_t> modules_;
