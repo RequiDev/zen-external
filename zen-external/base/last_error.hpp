@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <base/no_copy.hpp>
 
 typedef long HRESULT;
 typedef long NTSTATUS;

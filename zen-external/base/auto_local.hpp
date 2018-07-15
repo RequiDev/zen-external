@@ -1,10 +1,11 @@
 #pragma once
 #include <windows.h>
+#include <base/no_copy.hpp>
 
 namespace base
 {
 	template<typename T>
-	class auto_local_t
+	class auto_local_t : no_copy_t
 	{
 	public:
 		auto_local_t() = default;
