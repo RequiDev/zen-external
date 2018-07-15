@@ -1,9 +1,6 @@
 #include "peb.hpp"
 #include <remote/process.hpp>
-#include <native/peb_native.hpp>
 #include <base/auto_alloc.hpp>
-
-using namespace native;
 
 namespace remote
 {
@@ -36,7 +33,7 @@ namespace remote
 		if (!process_->read(uintptr_t(pbi_.PebBaseAddress), peb_))
 			return false;
 
-		peb_ldr_data_t ldr;
+		PEB_LDR_DATA ldr;
 		if (!process_->read(uintptr_t(peb_.Ldr), ldr))
 			return false;
 		memcpy(peb_.Ldr, &ldr, sizeof ldr);
@@ -48,13 +45,13 @@ namespace remote
 
 		command_line_ = read_unicode_string(process_parameters.CommandLine);
 
-		uintptr_t first_link = uintptr_t(ldr.InLoadOrderModuleList.ForwardLink);
+		uintptr_t first_link = uintptr_t(ldr.InLoadOrderModuleList.Flink);
 		uintptr_t forward_link = first_link;
 		do 
 		{
-			ldr_data_table_entry_t entry;
+			LDR_DATA_TABLE_ENTRY entry;
 			process_->read(forward_link, entry);
-			forward_link = uintptr_t(entry.InLoadOrderModuleList.ForwardLink);
+			forward_link = uintptr_t(entry.InLoadOrderModuleList.Flink);
 			
 			if (!entry.BaseAddress)
 				continue;
@@ -116,7 +113,8 @@ namespace remote
 
 	std::string peb_t::read_unicode_string(const UNICODE_STRING& value) const
 	{
-		decltype(&::RtlInitUnicodeString) rtl_init_unicode_string = reinterpret_cast<decltype(&::RtlInitUnicodeString)>(::GetProcAddress(::GetModuleHandle("ntdll.dll"), "RtlInitUnicodeString"));
+		using rtlius_t = void(__stdcall*)(PUNICODE_STRING, PCWSTR);
+		rtlius_t rtl_init_unicode_string = reinterpret_cast<rtlius_t>(::GetProcAddress(::GetModuleHandle("ntdll.dll"), "RtlInitUnicodeString"));
 		std::unique_ptr<wchar_t[]> buffer(std::make_unique<wchar_t[]>(value.Length));
 		if (!process_->read_memory(uintptr_t(value.Buffer), buffer.get(), value.Length))
 			return "";

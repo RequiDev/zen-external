@@ -1,6 +1,6 @@
 #pragma once
 #include <base/auto_handle.hpp>
-#include <winternl.h>
+#include <native/peb_native.hpp>
 #include <vector>
 
 namespace remote

@@ -18,9 +18,11 @@ namespace remote
 	bool process_t::attach(uint32_t process_id, uint32_t desired_access)
 	{
 		handle_.reset(::OpenProcess(desired_access, 0, process_id));
+		if (!handle_)
+			return false;
 		if (!peb_.reset())
 			return false;
-		return handle_;
+		return true;
 	}
 
 	bool process_t::read_memory(uintptr_t address, LPVOID buffer, SIZE_T size) const
@@ -38,6 +40,11 @@ namespace remote
 	bool process_t::query_basic_information(PROCESS_BASIC_INFORMATION& pbi)
 	{
 		return query_information(pbi, ProcessBasicInformation);
+	}
+
+	bool process_t::query_handle_information(PROCESS_HANDLE_INFORMATION& phi)
+	{
+		return query_information(phi, ProcessHandleCount);
 	}
 
 	module_t* process_t::get_module(const char* str)

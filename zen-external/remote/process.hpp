@@ -1,9 +1,7 @@
 #pragma once
-#include <base/auto_handle.hpp>
-#include <winternl.h>
-#include <libloaderapi.h>
 #include <remote/peb.hpp>
 #include <base/last_error.hpp>
+#include <libloaderapi.h>
 
 namespace remote
 {
@@ -81,7 +79,7 @@ public:
 	template<class T>
 	bool query_information(T& info, PROCESSINFOCLASS info_class)
 	{
-		using nqip_t = decltype(&::NtQueryInformationProcess);
+		using nqip_t = NTSTATUS(__stdcall*)(HANDLE, PROCESSINFOCLASS, PVOID, SIZE_T, PULONG);
 		nqip_t nt_query_information_process = reinterpret_cast<nqip_t>(
 			::GetProcAddress(::GetModuleHandle("ntdll.dll"), "NtQueryInformationProcess"));
 		if (!nt_query_information_process)
@@ -100,9 +98,12 @@ public:
 	 */
 	bool query_basic_information(PROCESS_BASIC_INFORMATION& pbi);
 
+	bool query_handle_information(PROCESS_HANDLE_INFORMATION& phi);
+
 	module_t* get_module(const char* str);
 
 private:
+
 	base::handle_t handle_;
 	peb_t peb_;
 };

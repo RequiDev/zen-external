@@ -1,6 +1,6 @@
 #include "last_error.hpp" 
 #include "auto_local.hpp"
-#include <winternl.h>
+#include <native/peb_native.hpp>
 
 namespace base
 {
