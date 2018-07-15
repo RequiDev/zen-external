@@ -113,8 +113,6 @@ namespace remote
 
 	std::string peb_t::read_unicode_string(const UNICODE_STRING& value) const
 	{
-		using rtlius_t = void(__stdcall*)(PUNICODE_STRING, PCWSTR);
-		rtlius_t rtl_init_unicode_string = reinterpret_cast<rtlius_t>(::GetProcAddress(::GetModuleHandle("ntdll.dll"), "RtlInitUnicodeString"));
 		std::unique_ptr<wchar_t[]> buffer(std::make_unique<wchar_t[]>(value.Length));
 		if (!process_->read_memory(uintptr_t(value.Buffer), buffer.get(), value.Length))
 			return "";
