@@ -5,6 +5,13 @@
 
 namespace cheat
 {
+	enum
+	{
+		WINDOW_NOT_FOUND = 1000,
+		PROCESS_NOT_ATTACHED,
+		OVERLAY_NOT_CREATED
+	};
+
 	cheat_t::cheat_t(const std::string& game, const std::string& class_name):
 		overlay_(this),
 		renderer_(nullptr),
@@ -18,17 +25,17 @@ namespace cheat
 		std::cout << "Initializing cheat for " << game_ << std::endl;
 		HWND hwnd(::FindWindow(class_name_.data(), nullptr));
 		if (!hwnd)
-			return 1000;
+			return WINDOW_NOT_FOUND;
 
 		DWORD process_id;
 		::GetWindowThreadProcessId(hwnd, &process_id);
 
 		if (!process_.attach(process_id))
-			return 1001;
+			return PROCESS_NOT_ATTACHED;
 
 		// only create overlay, if we for sure initialized correctly.
 		if (!overlay_.create(hwnd))
-			return 1002;
+			return OVERLAY_NOT_CREATED;
 
 		return overlay_.mainloop();
 	}

@@ -9,7 +9,7 @@ namespace remote
 /**
  * \brief A wrapper class for process and memory operations
  */
-class process_t
+class process_t : base::no_copy_t
 {
 public:
 	process_t();
