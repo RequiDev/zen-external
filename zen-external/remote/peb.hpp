@@ -1,22 +1,11 @@
 #pragma once
-#include <base/auto_handle.hpp>
+#include <remote/module.hpp>
 #include <native/peb_native.hpp>
 #include <vector>
 
 namespace remote
 {
 	class process_t;
-
-	struct module_t
-	{
-		uintptr_t base;
-		std::string name;
-		IMAGE_NT_HEADERS nt_headers;
-
-		std::vector<std::pair<std::string, uintptr_t>> exports;
-
-		uintptr_t get_proc_address(const char* export_name);
-	};
 
 	class peb_t
 	{
@@ -27,7 +16,6 @@ namespace remote
 		bool reset();
 	private:
 		bool read();
-		std::string from_unicode_string(const UNICODE_STRING& value) const;
 
 		process_t* process_;
 		PROCESS_BASIC_INFORMATION pbi_;

@@ -1,4 +1,5 @@
 #pragma once
+#include <base/auto_handle.hpp>
 #include <remote/peb.hpp>
 #include <base/last_error.hpp>
 #include <libloaderapi.h>
@@ -112,6 +113,8 @@ public:
 
 		return NT_SUCCESS(status);
 	}
+
+	std::string read_unicode_string(const UNICODE_STRING& unicode) const;
 
 	/**
 	 * \brief Get granted access of the process handle.

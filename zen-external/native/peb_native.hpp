@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <minwindef.h>
 
 #ifndef NT_SUCCESS
 #define NT_SUCCESS(Status) (((NTSTATUS)(Status)) >= 0)

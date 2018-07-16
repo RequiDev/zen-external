@@ -1,0 +1,113 @@
+#include "module.hpp"
+#include <remote/process.hpp>
+#include <base/auto_alloc.hpp>
+
+namespace remote
+{
+	module_t::module_t(process_t* process, _LDR_DATA_TABLE_ENTRY* entry):
+		process_(process),
+		base_(uintptr_t(entry->BaseAddress)),
+		size_(entry->SizeOfImage),
+		name_(process_->read_unicode_string(entry->BaseDllName)),
+		module_bytes_(new uint8_t[size_])
+	{
+		process_->read_memory(base_, module_bytes_, size_);
+		load_exports();
+	}
+
+	bool module_t::operator==(const module_t& rhs) const
+	{
+		return name_ == rhs.name_ && base_ == rhs.base_ && size_ == rhs.size_;
+	}
+
+	const std::string& module_t::name() const
+	{
+		return name_;
+	}
+
+	void module_t::load_exports()
+	{
+		IMAGE_DOS_HEADER* dos_hdr = reinterpret_cast<IMAGE_DOS_HEADER*>(module_bytes_);
+		if (dos_hdr->e_magic != IMAGE_DOS_SIGNATURE)
+			return;
+		nt_headers_ = reinterpret_cast<IMAGE_NT_HEADERS*>(uintptr_t(module_bytes_) + dos_hdr->e_lfanew);
+		if (nt_headers_->Signature != IMAGE_NT_SIGNATURE)
+			return;
+
+		IMAGE_DATA_DIRECTORY export_data_dir = nt_headers_->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
+		if (!export_data_dir.VirtualAddress || !export_data_dir.Size)
+			return;
+		IMAGE_EXPORT_DIRECTORY export_dir;
+		if (!process_->read(base_ + export_data_dir.VirtualAddress, export_dir) || !export_dir.NumberOfFunctions)
+			return;
+
+		base::auto_alloc_t<uintptr_t> functions(export_dir.NumberOfFunctions);
+		base::auto_alloc_t<uintptr_t> names(export_dir.NumberOfNames);
+		base::auto_alloc_t<uint16_t> ordinals(export_dir.NumberOfNames);
+
+		process_->read_memory(base_ + export_dir.AddressOfFunctions, functions, functions.size());
+		process_->read_memory(base_ + export_dir.AddressOfNames, names, names.size());
+		process_->read_memory(base_ + export_dir.AddressOfNameOrdinals, ordinals, ordinals.size());
+
+		for (size_t i = 0u; i < export_dir.NumberOfNames; ++i)
+		{
+			char buffer[128];
+			process_->read_memory(base_ + names[i], buffer, 128);
+
+			exports_.emplace_back(std::make_pair(buffer, base_ + functions[ordinals[i]]));
+		}
+	}
+
+	uintptr_t module_t::get_proc_address(const char* export_name)
+	{
+		for (const auto& exp : exports_)
+		{
+			if (exp.first == export_name)
+				return exp.second;
+		}
+
+		return 0;
+	}
+
+	uintptr_t module_t::find_pattern(const char* pattern) const
+	{
+		std::vector<int> bytes;
+		char* start = const_cast<char*>(pattern);
+		char* end = start + strlen(pattern);
+
+		for (char* current = start; current < end; ++current)
+		{
+			if (*current == '?')
+			{
+				++current;
+				if (*current == '?')
+					++current;
+				bytes.push_back(-1);
+			}
+			else
+			{
+				bytes.push_back(strtoul(current, &current, 16));
+			}
+		}
+
+		size_t pattern_size = bytes.size();
+		const int* bytes_data = bytes.data();
+
+		for (size_t i = 0u; i < size_ - pattern_size; ++i)
+		{
+			bool found = true;
+			for (size_t j = 0u; j < pattern_size; ++j)
+			{
+				if (module_bytes_[i + j] != bytes_data[j] && bytes_data[j] != -1)
+				{
+					found = false;
+					break;
+				}
+			}
+			if (found)
+				return base_ + i;
+		}
+
+		return 0;
+	}
+} // namespace remote

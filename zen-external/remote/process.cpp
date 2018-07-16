@@ -1,9 +1,12 @@
 #include "process.hpp"
 #include <memoryapi.h>
 #include <processthreadsapi.h>
+#include <winnls.h>
 
 namespace remote
 {
+	class module_t;
+
 	process_t::process_t():
 		peb_(this)
 	{
@@ -37,6 +40,19 @@ namespace remote
 	{
 		SIZE_T size_written;
 		return !!::WriteProcessMemory(handle_, LPVOID(address), buffer, size, &size_written) && size_written > 0;
+	}
+
+	std::string process_t::read_unicode_string(const UNICODE_STRING& unicode) const
+	{
+		std::unique_ptr<wchar_t[]> buffer(std::make_unique<wchar_t[]>(unicode.Length));
+		if (!read_memory(uintptr_t(unicode.Buffer), buffer.get(), unicode.Length))
+			return "";
+
+		int size = WideCharToMultiByte(CP_UTF8, 0, buffer.get(), unicode.Length, nullptr, 0, nullptr, nullptr);
+		std::unique_ptr<char[]> ret(std::make_unique<char[]>(size));
+		WideCharToMultiByte(CP_UTF8, 0, buffer.get(), unicode.Length, ret.get(), size, nullptr, nullptr);
+
+		return ret.get();
 	}
 
 	uint32_t process_t::get_granted_access() const

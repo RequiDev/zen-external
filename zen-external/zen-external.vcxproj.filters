@@ -51,6 +51,9 @@
     <ClCompile Include="remote\peb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="remote\module.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="remote\process.hpp">
@@ -108,6 +111,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="base\no_copy.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="remote\module.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -7,10 +7,25 @@ namespace base
 	class auto_alloc_t : no_copy_t
 	{
 	public:
+		auto_alloc_t():
+			buffer_(nullptr),
+			size_(0)
+		{
+		}
+
 		explicit auto_alloc_t(size_t size):
 			size_(size)
 		{
-			buffer_ = new T[size];
+			buffer_ = new T[size_];
+		}
+
+		void reset(size_t new_size)
+		{
+			if (buffer_)
+				delete[] buffer_;
+
+			size_ = new_size;
+			buffer_ = new T[size_];
 		}
 
 		~auto_alloc_t()
