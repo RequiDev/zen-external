@@ -18,6 +18,7 @@ namespace remote
 		bool operator==(const module_t& rhs) const;
 		const std::string& name() const;
 	private:
+		bool load_nt_headers();
 		void load_exports();
 
 		process_t* process_;

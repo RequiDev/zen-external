@@ -25,34 +25,39 @@ namespace remote
 		return name_;
 	}
 
-	void module_t::load_exports()
+	bool module_t::load_nt_headers()
 	{
+		if (nt_headers_)
+			return true;
 		IMAGE_DOS_HEADER* dos_hdr = reinterpret_cast<IMAGE_DOS_HEADER*>(module_bytes_);
 		if (dos_hdr->e_magic != IMAGE_DOS_SIGNATURE)
-			return;
+			return false;
 		nt_headers_ = reinterpret_cast<IMAGE_NT_HEADERS*>(uintptr_t(module_bytes_) + dos_hdr->e_lfanew);
 		if (nt_headers_->Signature != IMAGE_NT_SIGNATURE)
+			return false;
+
+		return true;
+	}
+
+	void module_t::load_exports()
+	{
+		if (!load_nt_headers())
 			return;
 
-		IMAGE_DATA_DIRECTORY export_data_dir = nt_headers_->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
-		if (!export_data_dir.VirtualAddress || !export_data_dir.Size)
+		IMAGE_DATA_DIRECTORY* export_data_dir = &nt_headers_->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
+		if (!export_data_dir->VirtualAddress || !export_data_dir->Size)
 			return;
-		IMAGE_EXPORT_DIRECTORY export_dir;
-		if (!process_->read(base_ + export_data_dir.VirtualAddress, export_dir) || !export_dir.NumberOfFunctions)
+		IMAGE_EXPORT_DIRECTORY* export_dir = reinterpret_cast<IMAGE_EXPORT_DIRECTORY*>(uintptr_t(module_bytes_) + export_data_dir->VirtualAddress);
+		if (!export_dir || !export_dir->NumberOfFunctions)
 			return;
 
-		base::auto_alloc_t<uintptr_t> functions(export_dir.NumberOfFunctions);
-		base::auto_alloc_t<uintptr_t> names(export_dir.NumberOfNames);
-		base::auto_alloc_t<uint16_t> ordinals(export_dir.NumberOfNames);
+		uintptr_t* functions = reinterpret_cast<uintptr_t*>(uintptr_t(module_bytes_) + export_dir->AddressOfFunctions);
+		uintptr_t* names = reinterpret_cast<uintptr_t*>(uintptr_t(module_bytes_) + export_dir->AddressOfNames);
+		uint16_t* ordinals = reinterpret_cast<uint16_t*>(uintptr_t(module_bytes_) + export_dir->AddressOfNameOrdinals);
 
-		process_->read_memory(base_ + export_dir.AddressOfFunctions, functions, functions.size());
-		process_->read_memory(base_ + export_dir.AddressOfNames, names, names.size());
-		process_->read_memory(base_ + export_dir.AddressOfNameOrdinals, ordinals, ordinals.size());
-
-		for (size_t i = 0u; i < export_dir.NumberOfNames; ++i)
+		for (size_t i = 0u; i < export_dir->NumberOfNames; ++i)
 		{
-			char buffer[128];
-			process_->read_memory(base_ + names[i], buffer, 128);
+			char* buffer = reinterpret_cast<char*>(uintptr_t(module_bytes_) + names[i]);
 
 			exports_.emplace_back(std::make_pair(buffer, base_ + functions[ordinals[i]]));
 		}
