@@ -1,6 +1,5 @@
 #include "module.hpp"
 #include <remote/process.hpp>
-#include <base/auto_alloc.hpp>
 
 namespace remote
 {
@@ -9,7 +8,8 @@ namespace remote
 		base_(uintptr_t(entry->BaseAddress)),
 		size_(entry->SizeOfImage),
 		name_(process_->read_unicode_string(entry->BaseDllName)),
-		module_bytes_(new uint8_t[size_])
+		module_bytes_(new uint8_t[size_]),
+		nt_headers_(nullptr)
 	{
 		process_->read_memory(base_, module_bytes_, size_);
 		load_exports();
@@ -17,7 +17,7 @@ namespace remote
 
 	bool module_t::operator==(const module_t& rhs) const
 	{
-		return name_ == rhs.name_ && base_ == rhs.base_ && size_ == rhs.size_;
+		return base_ == rhs.base_ && size_ == rhs.size_ && name_ == rhs.name_;
 	}
 
 	const std::string& module_t::name() const

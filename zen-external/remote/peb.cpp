@@ -45,12 +45,7 @@ namespace remote
 			if (!entry.BaseAddress)
 				continue;
 			
-			module_t mod(process_, &entry);
-			
-			// read nt shit
-			
-
-			modules_.push_back(mod);
+			modules_.emplace_back(module_t(process_, &entry));
 		} while (forward_link && forward_link != first_link);
 
 		return true;
