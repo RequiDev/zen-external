@@ -8,6 +8,7 @@ namespace remote
 		base_(uintptr_t(entry->BaseAddress)),
 		size_(entry->SizeOfImage),
 		name_(process_->read_unicode_string(entry->BaseDllName)),
+		module_path_(process_->read_unicode_string(entry->FullDllName)),
 		module_bytes_(nullptr),
 		nt_headers_(nullptr)
 	{

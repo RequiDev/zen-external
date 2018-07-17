@@ -31,6 +31,7 @@ namespace remote
 		uintptr_t base_;
 		size_t size_;
 		std::string name_;
+		std::string module_path_;
 		uint8_t* module_bytes_;
 		_IMAGE_NT_HEADERS* nt_headers_;
 

@@ -2,6 +2,7 @@
 #include <memoryapi.h>
 #include <processthreadsapi.h>
 #include <winnls.h>
+#include <base/string_util.hpp>
 
 namespace remote
 {
@@ -44,15 +45,11 @@ namespace remote
 
 	std::string process_t::read_unicode_string(const UNICODE_STRING& unicode) const
 	{
-		std::unique_ptr<wchar_t[]> buffer(std::make_unique<wchar_t[]>(unicode.Length));
-		if (!read_memory(uintptr_t(unicode.Buffer), buffer.get(), unicode.Length))
+		std::wstring buffer(unicode.Length, 0);
+		if (!read_memory(uintptr_t(unicode.Buffer), buffer.data(), unicode.Length))
 			return "";
 
-		int size = WideCharToMultiByte(CP_UTF8, 0, buffer.get(), unicode.Length, nullptr, 0, nullptr, nullptr);
-		std::unique_ptr<char[]> ret(std::make_unique<char[]>(size));
-		WideCharToMultiByte(CP_UTF8, 0, buffer.get(), unicode.Length, ret.get(), size, nullptr, nullptr);
-
-		return ret.get();
+		return base::wide_to_narrow(buffer);
 	}
 
 	uint32_t process_t::granted_access() const
