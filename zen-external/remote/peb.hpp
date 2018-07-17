@@ -12,7 +12,7 @@ namespace remote
 	public:
 		explicit peb_t(process_t* process);
 
-		module_t* get_module(const char* module_name);
+		bool get_module(const char* module_name, module_t& module_out);
 		bool reset();
 	private:
 		bool read();

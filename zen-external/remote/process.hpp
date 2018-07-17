@@ -114,23 +114,28 @@ public:
 		return NT_SUCCESS(status);
 	}
 
+	/**
+	 * \brief Reads memory from a UNICODE_STRING
+	 * \param unicode The UNICODE_STRING that's in the remote process.
+	 * \return The UNICODE_STRING read and returned as std::string.
+	 */
 	std::string read_unicode_string(const UNICODE_STRING& unicode) const;
 
 	/**
 	 * \brief Get granted access of the process handle.
 	 * \return Granted access.
 	 */
-	uint32_t get_granted_access() const;
+	uint32_t granted_access() const;
 
 	/**
 	 * \brief Gets module handle of the remote process.
 	 * \param str Name of the module to be found.
-	 * \return Pointer to module_t containing data of the module.
+	 * \param module_out Reference to module_t, where the module gets copied into.
+	 * \return Wether the module was found or not.
 	 */
-	module_t* get_module(const char* str);
+	bool get_module(const char* str, module_t& module_out);
 
 private:
-
 	base::handle_t handle_;
 	peb_t peb_;
 };

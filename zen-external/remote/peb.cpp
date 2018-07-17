@@ -51,19 +51,27 @@ namespace remote
 		return true;
 	}
 
-	module_t* peb_t::get_module(const char* module_name)
+	bool peb_t::get_module(const char* module_name, module_t& module_out)
 	{
 		for (auto& module : modules_)
 		{
-			if (module.name() == module_name)
-				return &module;
+			if (module.name() != module_name)
+				continue;
+
+			module_out = module;
+			return true;
 		}
-		return nullptr;
+		return false;
 	}
 
 	bool peb_t::reset()
 	{
 		::memset(&peb_, 0, sizeof peb_);
+		::memset(&ldr_, 0, sizeof ldr_);
+		::memset(&pbi_, 0, sizeof pbi_);
+		::memset(&process_parameters_, 0, sizeof process_parameters_);
+		command_line_ = "";
+		modules_.clear();
 		return read();
 	}
 } // namespace remote

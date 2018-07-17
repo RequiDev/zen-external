@@ -14,12 +14,18 @@ namespace remote
 	{
 	public:
 		module_t(process_t* process, _LDR_DATA_TABLE_ENTRY* entry);
+		~module_t();
+
+		bool refresh();
 
 		bool operator==(const module_t& rhs) const;
 		const std::string& name() const;
+
+		uintptr_t get_proc_address(const char* export_name);
+		uintptr_t find_pattern(const char* pattern);
 	private:
 		bool load_nt_headers();
-		void load_exports();
+		bool load_exports();
 
 		process_t* process_;
 		uintptr_t base_;
@@ -29,8 +35,5 @@ namespace remote
 		_IMAGE_NT_HEADERS* nt_headers_;
 
 		std::vector<std::pair<std::string, uintptr_t>> exports_;
-
-		uintptr_t get_proc_address(const char* export_name);
-		uintptr_t find_pattern(const char* pattern) const;
 	};
 } // namespace remote

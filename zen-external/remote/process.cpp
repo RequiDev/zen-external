@@ -55,7 +55,7 @@ namespace remote
 		return ret.get();
 	}
 
-	uint32_t process_t::get_granted_access() const
+	uint32_t process_t::granted_access() const
 	{
 		OBJECT_BASIC_INFORMATION info;
 		if (!query_object(info, ObjectBasicInformation))
@@ -64,8 +64,8 @@ namespace remote
 		return info.DesiredAccess;
 	}
 
-	module_t* process_t::get_module(const char* str)
+	bool process_t::get_module(const char* str, module_t& module_out)
 	{
-		return peb_.get_module(str);
+		return peb_.get_module(str, module_out);
 	}
 } // namespace remote
