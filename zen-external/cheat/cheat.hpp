@@ -12,6 +12,8 @@ namespace cheat
 	{
 	public:
 		cheat_t(const std::string& game, const std::string& class_name);
+		virtual ~cheat_t() { }
+
 		virtual int mainloop();
 
 	private:
