@@ -6,14 +6,6 @@
 
 namespace cheat
 {
-	std::string error_codes[] =
-	{
-		"Could not find game window.",
-		"Could not attach to game process.",
-		"Could not create overlay."
-	};
-
-
 	enum
 	{
 		WINDOW_NOT_FOUND = 1000,
