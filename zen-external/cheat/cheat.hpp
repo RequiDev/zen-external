@@ -1,7 +1,6 @@
 #pragma once
 #include <remote/process.hpp>
 #include <drawing/overlay.hpp>
-#include <string>
 #include <drawing/overlay_controller.hpp>
 #include <remote/process_controller.hpp>
 
@@ -13,7 +12,7 @@ namespace cheat
 	{
 	public:
 		cheat_t(const std::string& game, const std::string& class_name);
-		int mainloop();
+		virtual int mainloop();
 
 	private:
 		// overlay_controller_t

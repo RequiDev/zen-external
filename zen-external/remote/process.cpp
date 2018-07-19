@@ -31,6 +31,14 @@ namespace remote
 		return true;
 	}
 
+	bool process_t::refresh()
+	{
+		if (!peb_.reset())
+			return false;
+
+		return true;
+	}
+
 	bool process_t::read_memory(uintptr_t address, LPVOID buffer, SIZE_T size) const
 	{
 		SIZE_T size_read;

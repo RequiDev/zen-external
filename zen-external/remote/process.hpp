@@ -26,6 +26,9 @@ public:
 	 */
 	bool attach(uint32_t process_id, uint32_t desired_access = PROCESS_ALL_ACCESS);
 
+
+	bool refresh();
+
 	/**
 	 * \brief Reads memory from an address into a buffer.
 	 * \param address Address to read from.
