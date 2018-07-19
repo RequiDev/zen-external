@@ -35,10 +35,11 @@ namespace drawing
 
 		base::hresult_t hr;
 		hr = ::D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory), nullptr, reinterpret_cast<void**>(&factory_));
-		if (FAILED(hr))
+		if (!hr.success())
 			return false;
 
-		if (FAILED(::DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&write_factory_))))
+		hr = ::DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&write_factory_));
+		if (!hr.success())
 			return false;
 
 		const D2D1_PIXEL_FORMAT pixel_format(D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED));
@@ -47,7 +48,7 @@ namespace drawing
 		const D2D1_HWND_RENDER_TARGET_PROPERTIES hwnd_render_target_properties(D2D1::HwndRenderTargetProperties(owner_, size, D2D1_PRESENT_OPTIONS_IMMEDIATELY));
 
 		hr = factory_->CreateHwndRenderTarget(render_target_properties, hwnd_render_target_properties, &render_target_);
-		if (FAILED(hr))
+		if (!hr.success())
 			return false;
 
 		create_device_objects();
@@ -84,7 +85,7 @@ namespace drawing
 		base::hresult_t hr;
 		hr = render_target_->Resize(D2D1::SizeU(rect.width(), rect.height()));
 
-		if (FAILED(hr))
+		if (!hr.success())
 			return false;
 
 		return true;
@@ -103,11 +104,11 @@ namespace drawing
 		base::hresult_t hr;
 
 		hr = render_target_->CreateSolidColorBrush(D2D1::ColorF(0xFFFFFFFF), &color_brush_);
-		if (FAILED(hr))
+		if (!hr.success())
 			return false;
 
 		hr = write_factory_->CreateTextFormat(L"Tahoma", nullptr, DWRITE_FONT_WEIGHT(13), DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 13, L"de-de", &font_);
-		if (FAILED(hr))
+		if (!hr.success())
 			return false;
 
 		return true;

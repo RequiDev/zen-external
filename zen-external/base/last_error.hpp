@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <base/no_copy.hpp>
 
 typedef long HRESULT;
 typedef long NTSTATUS;
@@ -14,6 +13,8 @@ namespace base
 		hresult_t(HRESULT result);
 		~hresult_t();
 
+		bool success() const;
+
 		operator HRESULT() const;
 	private:
 		HRESULT result_;
@@ -25,6 +26,8 @@ namespace base
 		ntstatus_t() = default;
 		ntstatus_t(NTSTATUS status);
 		~ntstatus_t();
+
+		bool success() const;
 
 		operator NTSTATUS() const;
 	private:

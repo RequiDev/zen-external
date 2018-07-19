@@ -11,8 +11,13 @@ namespace base
 
 	hresult_t::~hresult_t()
 	{
-		if (FAILED(result_))
+		if (!success())
 			set_last_hresult(result_);
+	}
+
+	bool hresult_t::success() const
+	{
+		return SUCCEEDED(result_);
 	}
 
 	hresult_t::operator HRESULT() const
@@ -27,8 +32,13 @@ namespace base
 
 	ntstatus_t::~ntstatus_t()
 	{
-		if (!NT_SUCCESS(status_))
+		if (!success())
 			set_last_ntstatus(status_);
+	}
+
+	bool ntstatus_t::success() const
+	{
+		return NT_SUCCESS(status_);
 	}
 
 	ntstatus_t::operator NTSTATUS() const

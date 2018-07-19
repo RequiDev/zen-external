@@ -106,7 +106,7 @@ public:
 		base::ntstatus_t status;
 		status = nt_query_information_process(handle_, info_class, &info, sizeof T, nullptr);
 
-		return NT_SUCCESS(status);
+		return status.success();
 	}
 
 	/**
@@ -128,7 +128,7 @@ public:
 		base::ntstatus_t status;
 		status = nt_query_object(handle_, info_class, &info, sizeof info, nullptr);
 
-		return NT_SUCCESS(status);
+		return status.success();
 	}
 
 	/**

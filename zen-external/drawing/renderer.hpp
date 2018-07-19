@@ -12,6 +12,8 @@ namespace drawing
 {
 	class renderer_t
 	{
+		friend class overlay_t;
+
 		struct fps_data_t
 		{
 			int frames;
@@ -29,14 +31,14 @@ namespace drawing
 		renderer_t() noexcept;
 		~renderer_t();
 
-		bool create(HWND owner, device_type_t device_type);
 		void draw_text(const std::string& text, const base::point_t& point) const;
-		void begin_rendering();
-		void end_rendering();
 
 		int get_frame_rate() const;
-		bool reset_device();
 	private:
+		bool create(HWND owner, device_type_t device_type);
+		void begin_rendering();
+		void end_rendering();
+		bool reset_device();
 
 		std::unique_ptr<device_t> device_;
 		HWND hwnd_;

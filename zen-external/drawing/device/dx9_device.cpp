@@ -10,6 +10,8 @@ namespace drawing
 		dpp_(),
 		d3d_(nullptr),
 		device_(nullptr),
+		vertex_buffer_(nullptr),
+		index_buffer_(nullptr),
 		font_(nullptr),
 		sprite_(nullptr)
 	{
@@ -41,7 +43,7 @@ namespace drawing
 
 		base::hresult_t hr;
 		hr = d3d_->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, dpp_.hDeviceWindow, D3DCREATE_HARDWARE_VERTEXPROCESSING, &dpp_, &device_);
-		if (FAILED(hr))
+		if (!hr.success())
 			return false;
 
 		if (!create_device_objects())
@@ -88,7 +90,7 @@ namespace drawing
 
 		base::hresult_t hr;
 		hr = device_->Reset(&dpp_);
-		if (FAILED(hr))
+		if (!hr.success())
 			return false;
 
 		if (!create_device_objects())
@@ -111,11 +113,11 @@ namespace drawing
 	{
 		base::hresult_t hr;
 		hr = ::D3DXCreateFont(device_, 13, 0, FW_HEAVY, 1, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Tahoma", &font_);
-		if (FAILED(hr))
+		if (!hr.success())
 			return false;
 
 		hr = ::D3DXCreateSprite(device_, &sprite_);
-		if (FAILED(hr))
+		if (!hr.success())
 			return false;
 
 		return true;
