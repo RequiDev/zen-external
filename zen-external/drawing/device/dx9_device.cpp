@@ -68,6 +68,8 @@ namespace drawing
 
 	void dx9_device_t::end_scene()
 	{
+
+
 		sprite_->End();
 		device_->EndScene();
 		device_->Present(nullptr, nullptr, nullptr, nullptr);
@@ -121,6 +123,14 @@ namespace drawing
 
 	void dx9_device_t::destroy_device_objects()
 	{
+		if (vertex_buffer_)
+			vertex_buffer_->Release();
+		vertex_buffer_ = nullptr;
+
+		if (index_buffer_)
+			index_buffer_->Release();
+		index_buffer_ = nullptr;
+
 		if (font_)
 			font_->Release();
 		font_ = nullptr;

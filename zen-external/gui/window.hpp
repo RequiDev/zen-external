@@ -1,4 +1,5 @@
 #pragma once
+#include <base/no_copy.hpp>
 #include <string>
 #include <cstdint>
 #include <windef.h>
@@ -9,7 +10,8 @@ namespace base {
 
 namespace gui
 {
-	class window_t
+	class window_t:
+		base::no_copy_t
 	{
 	public:
 		explicit window_t(const std::string& class_name);

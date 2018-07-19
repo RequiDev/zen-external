@@ -1,11 +1,12 @@
 #pragma once
 #include <windows.h>
 #include <base/no_copy.hpp>
+#include <base/no_move.hpp>
 
 namespace base
 {
 	template<typename T>
-	class auto_local_t : no_copy_t
+	class auto_local_t : no_copy_t, no_move_t
 	{
 	public:
 		auto_local_t() = default;
@@ -62,4 +63,4 @@ namespace base
 	private:
 		T mem_;
 	};
-}
+} // namespace base

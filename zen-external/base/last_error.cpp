@@ -85,4 +85,4 @@ namespace base
 	{
 		last_result = result;
 	}
-}
+} // namespace base

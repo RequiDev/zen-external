@@ -122,5 +122,8 @@
     <ClInclude Include="base\string_util.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="base\no_move.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

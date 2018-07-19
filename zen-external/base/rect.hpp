@@ -9,6 +9,7 @@ namespace base
 	{
 	public:
 		rect_t() = default;
+		rect_t(const RECT& rc);
 		explicit rect_t(const point_t& pt);
 
 		int width() const;
@@ -16,7 +17,6 @@ namespace base
 
 		bool operator==(const RECT& rhs) const;
 		bool operator!=(const RECT& rhs) const;
-		rect_t& operator=(const RECT& rc);
 	private:
 	};
 } // namespace base

@@ -7,11 +7,12 @@ namespace base
 	{
 	public:
 		point_t() = default;
+		point_t(const POINT& pt);
 		point_t(int x, int y);
 
 		bool operator==(const POINT& rhs) const;
 		bool operator!=(const POINT& rhs) const;
-		point_t& operator=(const POINT& rhs);
+		//point_t& operator=(const POINT& rhs);
 	private:
 	};
 } // namespace base

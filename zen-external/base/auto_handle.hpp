@@ -1,5 +1,6 @@
 #pragma once
 #include <base/no_copy.hpp>
+#include <base/no_move.hpp>
 #include <windef.h>
 #include <memory>
 #include <handleapi.h>
@@ -8,7 +9,7 @@ namespace base
 {
 	// Credits to DarthTon for move semantics and customization per template parameter
 	template<typename T, typename F, F CloseFn, T ZeroHandle>
-	class auto_handle_t : no_copy_t
+	class auto_handle_t : no_copy_t, no_move_t
 	{
 	public:
 		explicit auto_handle_t(T handle = ZeroHandle) noexcept:

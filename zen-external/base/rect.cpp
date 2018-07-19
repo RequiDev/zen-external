@@ -4,6 +4,11 @@
 
 namespace base
 {
+	rect_t::rect_t(const RECT& rc):
+		RECT(rc)
+	{
+	}
+
 	rect_t::rect_t(const point_t& pt)
 	{
 		left = pt.x;
@@ -30,14 +35,5 @@ namespace base
 	bool rect_t::operator!=(const RECT& rhs) const
 	{
 		return !(*this == rhs);
-	}
-
-	rect_t& rect_t::operator=(const RECT& rc)
-	{
-		left = rc.left;
-		top = rc.top;
-		right = rc.right;
-		bottom = rc.bottom;
-		return *this;
 	}
 } // namespace base

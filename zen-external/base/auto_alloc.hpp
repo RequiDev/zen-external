@@ -1,10 +1,11 @@
 #pragma once
 #include <base/no_copy.hpp>
+#include <base/no_move.hpp>
 
 namespace base
 {
 	template<typename T>
-	class auto_alloc_t : no_copy_t
+	class auto_alloc_t : no_copy_t, no_move_t
 	{
 	public:
 		auto_alloc_t():
@@ -61,4 +62,4 @@ namespace base
 		T* buffer_;
 		size_t size_;
 	};
-}
+} // namespace base
