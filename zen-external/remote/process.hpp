@@ -49,7 +49,7 @@ public:
 
 	/**
 	 * \brief Read memory from an address using a template value.
-	 * \tparam T Any class/struct/type you want to write into memory.
+	 * \tparam T Type of class/struct/type you want to read.
 	 * \param address Address to read from.
 	 * \param value Value to read into.
 	 * \return Wether the read operation succeeded or not. GetLastError() for more information.
@@ -71,6 +71,20 @@ public:
 	bool write(uintptr_t address, const T& value)
 	{
 		return write_memory(address, &value, sizeof value);
+	}
+
+	/**
+	 * \brief Read memory from an address and returns by value.
+	 * \tparam T Type of class/struct/type you want to read.
+	 * \param address Address to read from.
+	 * \return Read value.
+	 */
+	template<typename T>
+	T read(uintptr_t address)
+	{
+		T ret;
+		read(address, ret);
+		return ret;
 	}
 
 	/**

@@ -21,7 +21,8 @@ namespace cheat
 		OVERLAY_NOT_CREATED
 	};
 
-	cheat_t::cheat_t(const std::string& game, const std::string& class_name):
+	cheat_t::cheat_t(const std::string& game, const std::string& class_name) :
+		last_error_(0),
 		overlay_(this),
 		renderer_(nullptr),
 		game_(game),
@@ -29,61 +30,45 @@ namespace cheat
 	{
 	}
 
-	int cheat_t::mainloop()
+	bool cheat_t::init()
 	{
 		std::cout << "Initializing cheat for " << game_ << std::endl;
 		HWND hwnd(::FindWindow(class_name_.data(), nullptr));
 		if (!hwnd)
-			return WINDOW_NOT_FOUND;
+		{
+			last_error_ = WINDOW_NOT_FOUND;
+			return false;
+		}
 
 		DWORD process_id;
 		::GetWindowThreadProcessId(hwnd, &process_id);
 
 		if (!process_.attach(process_id))
-			return PROCESS_NOT_ATTACHED;
+		{
+			last_error_ = PROCESS_NOT_ATTACHED;
+			return false;
+		}
 
 		// only create overlay, if we for sure initialized correctly.
 		if (!overlay_.create(hwnd))
-			return OVERLAY_NOT_CREATED;
-
-		int return_code =  overlay_.mainloop();
-
-		if (return_code != EXIT_SUCCESS)
 		{
-			std::string error_message;
-
-			int last_error(base::get_last_error());
-			HRESULT last_hresult(base::get_last_hresult());
-			NTSTATUS last_ntstatus(base::get_last_ntstatus());
-			long relevant_code(0);
-			if (last_error)
-			{
-				error_message = base::get_error_message(last_error);
-				relevant_code = last_error;
-			}
-			else if (last_hresult)
-			{
-				error_message = base::get_error_message(last_hresult);
-				relevant_code = last_hresult;
-			}
-			else if (last_ntstatus)
-			{
-				error_message = base::get_nt_message(last_ntstatus);
-				relevant_code = last_ntstatus;
-			}
-			std::stringstream ss;
-			if (!error_message.empty())
-			{
-				ss << "\n(";
-				ss << "0x" << std::hex << relevant_code;
-				ss << ") ";
-			}
-
-			std::cout << "Something went wrong: " << error_codes[return_code - 1000] << ss.str() << error_message << std::endl;
-			std::cin.get();
+			last_error_ = OVERLAY_NOT_CREATED;
+			return false;
 		}
 
-		return return_code;
+		return true;
+	}
+
+	int cheat_t::mainloop()
+	{
+		return overlay_.mainloop();
+	}
+
+	int cheat_t::operator()()
+	{
+		if (!init())
+			return last_error_;
+		return mainloop();
 	}
 
 	void cheat_t::set_renderer(drawing::renderer_t* renderer)

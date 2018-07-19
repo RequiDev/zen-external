@@ -3,6 +3,15 @@
 
 namespace remote
 {
+	module_t::module_t():
+		process_(nullptr),
+		base_(0),
+		size_(0),
+		module_bytes_(nullptr),
+		nt_headers_(nullptr)
+	{
+	}
+
 	module_t::module_t(process_t* process, _LDR_DATA_TABLE_ENTRY* entry):
 		process_(process),
 		base_(uintptr_t(entry->BaseAddress)),
@@ -22,6 +31,8 @@ namespace remote
 
 	bool module_t::refresh()
 	{
+		if (!is_valid())
+			return false;
 		if (module_bytes_)
 			delete[] module_bytes_;
 		module_bytes_ = new uint8_t[size_];
@@ -30,6 +41,16 @@ namespace remote
 		if (!load_exports())
 			return false;
 		return true;
+	}
+
+	bool module_t::is_valid() const
+	{
+		return process_ != nullptr && base_ != 0;
+	}
+
+	module_t::operator bool() const
+	{
+		return is_valid();
 	}
 
 	bool module_t::operator==(const module_t& rhs) const
@@ -44,6 +65,8 @@ namespace remote
 
 	bool module_t::load_nt_headers()
 	{
+		if (!is_valid())
+			return false;
 		if (nt_headers_)
 			return true;
 		if (!module_bytes_)
@@ -61,6 +84,8 @@ namespace remote
 
 	bool module_t::load_exports()
 	{
+		if (!is_valid())
+			return false;
 		if (!load_nt_headers())
 			return false;
 
@@ -85,6 +110,8 @@ namespace remote
 
 	uintptr_t module_t::get_proc_address(const char* export_name)
 	{
+		if (!is_valid())
+			return 0;
 		if (exports_.empty() && !refresh())
 			return 0;
 
@@ -99,6 +126,8 @@ namespace remote
 
 	uintptr_t module_t::find_pattern(const char* pattern)
 	{
+		if (!is_valid())
+			return 0;
 		if (!module_bytes_ && !refresh())
 			return 0;
 

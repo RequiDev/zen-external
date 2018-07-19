@@ -13,11 +13,14 @@ namespace remote
 	class module_t
 	{
 	public:
+		module_t();
 		module_t(process_t* process, _LDR_DATA_TABLE_ENTRY* entry);
 		~module_t();
 
 		bool refresh();
+		bool is_valid() const;
 
+		operator bool() const;
 		bool operator==(const module_t& rhs) const;
 		const std::string& name() const;
 

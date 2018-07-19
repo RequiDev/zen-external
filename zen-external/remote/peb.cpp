@@ -55,7 +55,7 @@ namespace remote
 	{
 		for (auto& module : modules_)
 		{
-			if (module.name() != module_name)
+			if (_stricmp(module.name().c_str(), module_name))
 				continue;
 
 			module_out = module;

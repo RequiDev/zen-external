@@ -14,7 +14,10 @@ namespace cheat
 		cheat_t(const std::string& game, const std::string& class_name);
 		virtual ~cheat_t() { }
 
+		virtual bool init();
 		virtual int mainloop();
+
+		int operator()();
 
 	private:
 		// overlay_controller_t
@@ -23,6 +26,8 @@ namespace cheat
 		// process_controller_t
 		virtual bool read_memory(uintptr_t address, void* buffer, size_t size);
 
+		int last_error_;
+	protected:
 		remote::process_t process_;
 		drawing::overlay_t overlay_;
 		drawing::renderer_t* renderer_;
