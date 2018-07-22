@@ -9,7 +9,7 @@ namespace drawing
 	class overlay_t
 	{
 	public:
-		explicit overlay_t(overlay_controller_t* ctrl = nullptr) noexcept;
+		explicit overlay_t(const std::string& class_name,overlay_controller_t* ctrl = nullptr) noexcept;
 		~overlay_t();
 
 		bool create(HWND target_hwnd);
@@ -23,6 +23,7 @@ namespace drawing
 		static LRESULT CALLBACK wnd_proc_thunk(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 		static overlay_t* this_;
 
+		std::string class_name_;
 		overlay_controller_t* ovrly_ctrl_;
 
 		renderer_t renderer_;

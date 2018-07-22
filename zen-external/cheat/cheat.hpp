@@ -11,7 +11,7 @@ namespace cheat
 		public remote::process_controller_t
 	{
 	public:
-		cheat_t(const std::string& game, const std::string& class_name);
+		cheat_t(const std::string& game, const std::string& class_name, const std::string& overlay_class_name);
 		virtual ~cheat_t() { }
 
 		virtual bool init();

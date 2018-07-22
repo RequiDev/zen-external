@@ -13,9 +13,9 @@ namespace cheat
 		OVERLAY_NOT_CREATED
 	};
 
-	cheat_t::cheat_t(const std::string& game, const std::string& class_name) :
+	cheat_t::cheat_t(const std::string& game, const std::string& class_name, const std::string& overlay_class_name) :
 		last_error_(0),
-		overlay_(this),
+		overlay_(overlay_class_name, this),
 		renderer_(nullptr),
 		game_(game),
 		class_name_(class_name)

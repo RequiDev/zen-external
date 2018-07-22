@@ -74,20 +74,6 @@ public:
 	}
 
 	/**
-	 * \brief Read memory from an address and returns by value.
-	 * \tparam T Type of class/struct/type you want to read.
-	 * \param address Address to read from.
-	 * \return Read value.
-	 */
-	template<typename T>
-	T read(uintptr_t address)
-	{
-		T ret;
-		read(address, ret);
-		return ret;
-	}
-
-	/**
 	 * \brief Query information of the process.
 	 * \tparam T Type of info to store the data in.
 	 * \param info Reference to object where the info gets stored.

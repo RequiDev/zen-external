@@ -11,7 +11,8 @@ namespace drawing
 {
 	overlay_t* overlay_t::this_ = nullptr;
 
-	overlay_t::overlay_t(overlay_controller_t* ctrl) noexcept:
+	overlay_t::overlay_t(const std::string& class_name, overlay_controller_t* ctrl) noexcept :
+		class_name_(class_name),
 		ovrly_ctrl_(ctrl),
 		hwnd_(nullptr),
 		target_hwnd_(nullptr)
@@ -22,23 +23,30 @@ namespace drawing
 	overlay_t::~overlay_t()
 	{
 		::DestroyWindow(hwnd_);
-		::UnregisterClass("csgo_external", nullptr);
+		::UnregisterClass(class_name_.c_str(), nullptr);
 	}
 
 	bool overlay_t::create(HWND target_hwnd)
 	{
-		if (!::GetWindowRect(target_hwnd, &window_rect_))
+		target_hwnd_ = target_hwnd;
+		if (!::GetWindowRect(target_hwnd_, &window_rect_))
 			return false;
 
-		target_hwnd_ = target_hwnd;
+		int len = ::GetWindowTextLength(target_hwnd_);
+
+		std::string window_name(len, 0);
+		if (!::GetWindowText(target_hwnd_, window_name.data(), window_name.length()))
+			return false;
+
+		window_name.append(" Overlay");
 
 		WNDCLASSEX wc = { 0 };
 		wc.cbSize = sizeof WNDCLASSEX;
 		wc.lpfnWndProc = wnd_proc_thunk;
-		wc.lpszClassName = "csgo_external";
+		wc.lpszClassName = class_name_.c_str();
 		::RegisterClassEx(&wc);
 
-		hwnd_ = ::CreateWindowEx(WS_EX_TOPMOST | WS_EX_TRANSPARENT | WS_EX_LAYERED | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE, wc.lpszClassName, "csgo_external", WS_POPUP | WS_VISIBLE,
+		hwnd_ = ::CreateWindowEx(WS_EX_TOPMOST | WS_EX_TRANSPARENT | WS_EX_LAYERED | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE, wc.lpszClassName, window_name.c_str(), WS_POPUP | WS_VISIBLE,
 		                        window_rect_.left, window_rect_.top, window_rect_.width(), window_rect_.height(), nullptr,
 		                        nullptr, nullptr, nullptr);
 
